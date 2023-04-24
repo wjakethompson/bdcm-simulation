@@ -5,22 +5,30 @@ last_cond <- as.integer(keep_cond[2])
 
 
 ### Setup ----------------------------------------------------------------------
-needed_packages <- c("tidyverse", "here", "fs", "glue", "modelr",
-                     "wjakethompson/portableParallelSeeds",
-                     "wjakethompson/measr")
-load_packages <- function(x) {
-  pkg <- stringr::str_replace(x, ".*\\/", "")
-  if(!(pkg %in% rownames(installed.packages()))) {
-    if (stringr::str_detect(x, "\\/")) {
-      remotes::install_github(x)
-    } else {
-      install.packages(x, repos = "https://cran.rstudio.com/")
-    }
-  }
+# install.packages("credentials")
+credentials::set_github_pat()
 
-  suppressPackageStartupMessages(require(pkg, character.only = TRUE))
-}
-vapply(needed_packages, load_packages, logical(1))
+# install.packages("tidyverse")
+# install.packages("here")
+# install.packages("fs")
+# install.packages("glue")
+# install.packages("modelr")
+# install.packages("remotes")
+# remotes::install_github("wjakethompson/portableParallelSeeds")
+#
+# install.packages("rstan", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
+# install.packages("StanHeaders", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
+# remotes::install_github("stan-dev/cmdstanr")
+# cmdstanr::install_cmdstan(cores = 3)
+# remotes::install_github("wjakethompson/measr")
+
+library(tidyverse)
+library(here)
+library(fs)
+library(glue)
+library(modelr)
+library(portableParallelSeeds)
+library(measr)
 
 
 ### Utility functions ----------------------------------------------------------
@@ -32,13 +40,13 @@ inv_logit <- function(x) {
 }
 qmatrix_entries <- function(att, item, all_entries) {
   entry <- if (item %in% 1:3) {
-    all_entries |>
-      filter(!!sym(att) == 1L, total == 1L) |>
+    all_entries %>%
+      filter(!!sym(att) == 1L, total == 1L) %>%
       select(-c(total, prob))
   } else {
-    all_entries |>
-      filter(!!sym(att) == 1L) |>
-      slice_sample(n = 1, weight_by = prob) |>
+    all_entries %>%
+      filter(!!sym(att) == 1L) %>%
+      slice_sample(n = 1, weight_by = prob) %>%
       select(-c(total, prob))
   }
 
@@ -46,26 +54,26 @@ qmatrix_entries <- function(att, item, all_entries) {
 }
 generate_items <- function(q_matrix, generate) {
   all_param <- get_parameters(q_matrix, item_id = "item_id", type = "lcdm")
-  intercepts <- all_param |>
-    filter(class == "intercept") |>
+  intercepts <- all_param %>%
+    filter(class == "intercept") %>%
     mutate(value = runif(n(), min = -3.00, max = 0.60))
-  maineffects <- all_param |>
-    filter(class == "maineffect") |>
+  maineffects <- all_param %>%
+    filter(class == "maineffect") %>%
     mutate(value = runif(n(), min = 1.00, max = 5.00))
 
   interactions <- if (generate == "lcdm") {
-    all_param |>
-      filter(class == "interaction") |>
-      left_join(maineffects |>
-                  slice_min(value, n = 1, by = item_id) |>
-                  mutate(min_value = -1 * value) |>
+    all_param %>%
+      filter(class == "interaction") %>%
+      left_join(maineffects %>%
+                  slice_min(value, n = 1, by = item_id) %>%
+                  mutate(min_value = -1 * value) %>%
                   select(item_id, min_value),
-                by = "item_id") |>
-      mutate(value = map_dbl(min_value, ~runif(1, min = .x, max = 2.00))) |>
+                by = "item_id") %>%
+      mutate(value = map_dbl(min_value, ~runif(1, min = .x, max = 2.00))) %>%
       select(-min_value)
   } else if (generate == "dina") {
-    all_param |>
-      filter(class == "interaction") |>
+    all_param %>%
+      filter(class == "interaction") %>%
       mutate(value = runif(n(), min = 0.00, max = 5.00))
   }
   item_params <- full_join(all_param,
@@ -73,77 +81,77 @@ generate_items <- function(q_matrix, generate) {
                            by = c("item_id", "class", "attributes", "coef"))
 
   if (generate == "dina") {
-    item_params <- item_params |>
+    item_params <- item_params %>%
       mutate(num_att = case_when(is.na(attributes) ~ 0L,
-                                 TRUE ~ str_count(attributes, "__") + 1)) |>
-      mutate(max_att = max(num_att), .by = item_id) |>
-      filter((num_att == 0) | (num_att == max_att)) |>
+                                 TRUE ~ str_count(attributes, "__") + 1)) %>%
+      mutate(max_att = max(num_att), .by = item_id) %>%
+      filter((num_att == 0) | (num_att == max_att)) %>%
       select(-c(num_att, max_att))
   }
 
   return(item_params)
 }
 pimat <- function(attributes, item_params) {
-  possible_profiles <- create_profiles(attributes = attributes) |>
+  possible_profiles <- create_profiles(attributes = attributes) %>%
     rowid_to_column(var = "class_id")
-  class_params <- possible_profiles |>
-    select(-class_id) |>
-    modelr::model_matrix(as.formula(paste0("~ .^", attributes))) |>
-    rowid_to_column(var = "class_id") |>
-    pivot_longer(-class_id, names_to = "param", values_to = "relevant") |>
+  class_params <- possible_profiles %>%
+    select(-class_id) %>%
+    modelr::model_matrix(as.formula(paste0("~ .^", attributes))) %>%
+    rowid_to_column(var = "class_id") %>%
+    pivot_longer(-class_id, names_to = "param", values_to = "relevant") %>%
     mutate(class = case_when(param == "(Intercept)" ~ "intercept",
                              str_detect(param, ":") ~ "interaction",
                              TRUE ~ "maineffect"),
            attributes = case_when(class == "intercept" ~ NA_character_,
-                                  TRUE ~ str_replace(param, ":", "__"))) |>
+                                  TRUE ~ str_replace(param, ":", "__"))) %>%
     select(class_id, class, attributes, relevant)
 
   pi_mat <- crossing(item_id = unique(item_params$item_id),
-                     class_id = unique(class_params$class_id)) |>
-    left_join(item_params, by = "item_id", relationship = "many-to-many") |>
+                     class_id = unique(class_params$class_id)) %>%
+    left_join(item_params, by = "item_id", relationship = "many-to-many") %>%
     left_join(class_params, by = c("class_id", "class", "attributes"),
-              relationship = "many-to-one") |>
-    filter(relevant == 1) |>
+              relationship = "many-to-one") %>%
+    filter(relevant == 1) %>%
     summarize(log_odds = sum(value), .by = c(item_id, class_id))
 
   return(pi_mat)
 }
 generate_data <- function(attributes, items, sample_size, generate) {
   # generate q-matrix -----
-  all_entries <- create_profiles(attributes = attributes) |>
-    rowwise() |>
-    mutate(total = sum(c_across(where(is.integer)))) |>
-    ungroup() |>
-    filter(between(total, 1, 2)) |>
+  all_entries <- create_profiles(attributes = attributes) %>%
+    rowwise() %>%
+    mutate(total = sum(c_across(where(is.integer)))) %>%
+    ungroup() %>%
+    filter(between(total, 1, 2)) %>%
     mutate(prob = case_when(total == 1 ~ 0.1,
                             TRUE ~ (0.9 / (attributes - 1))))
 
   q_matrix <- crossing(att = paste0("att", seq_len(attributes)),
-           item = seq_len(items)) |>
-    pmap_dfr(qmatrix_entries, all_entries = all_entries) |>
+           item = seq_len(items)) %>%
+    pmap_dfr(qmatrix_entries, all_entries = all_entries) %>%
     mutate(item_id = paste0("item_", sprintf("%02d", 1:n())),
            .before = 1)
 
   # generate true profiles -----
-  profiles <- create_profiles(attributes = attributes) |>
-    rowid_to_column(var = "class_id") |>
-    slice_sample(n = sample_size, replace = TRUE) |>
+  profiles <- create_profiles(attributes = attributes) %>%
+    rowid_to_column(var = "class_id") %>%
+    slice_sample(n = sample_size, replace = TRUE) %>%
     rowid_to_column(var = "resp_id")
 
   # generate true item parameters -----
   item_params <- generate_items(q_matrix = q_matrix, generate = generate)
-  pi_matrix <- pimat(attributes = attributes, item_params = item_params) |>
+  pi_matrix <- pimat(attributes = attributes, item_params = item_params) %>%
     mutate(prob = map_dbl(log_odds, inv_logit))
 
   # generate data -----
-  data <- profiles |>
-    select(resp_id, class_id) |>
-    left_join(pi_matrix, by = "class_id", relationship = "many-to-many") |>
+  data <- profiles %>%
+    select(resp_id, class_id) %>%
+    left_join(pi_matrix, by = "class_id", relationship = "many-to-many") %>%
     mutate(rand = runif(n(), min = 0, max = 1),
            score = case_when(rand < prob ~ 1L,
-                             rand >= prob ~ 0L)) |>
-    select(resp_id, item_id, score) |>
-    mutate(item_id = paste0("item_", sprintf("%02d", item_id))) |>
+                             rand >= prob ~ 0L)) %>%
+    select(resp_id, item_id, score) %>%
+    mutate(item_id = paste0("item_", sprintf("%02d", item_id))) %>%
     pivot_wider(names_from = item_id, values_from = score)
 
   # return data -----
@@ -185,17 +193,17 @@ calc_kappa <- function(score1, score2, min_score, max_score) {
   kappa
 }
 agreement <- function(model, threshold, data) {
-  measr_extract(model, "attribute_prob") |>
+  measr_extract(model, "attribute_prob") %>%
     mutate(resp_id = as.integer(as.character(resp_id)),
            across(starts_with("att"), ~case_when(.x >= threshold ~ 1L,
-                                                 TRUE ~ 0L))) |>
+                                                 TRUE ~ 0L))) %>%
     pivot_longer(cols = starts_with("att"), names_to = "att",
-                 values_to = "est") |>
-    left_join(data$true_person |>
-                select(-class_id) |>
+                 values_to = "est") %>%
+    left_join(data$true_person %>%
+                select(-class_id) %>%
                 pivot_longer(cols = starts_with("att"), names_to = "att",
                              values_to = "true"),
-              by = c("resp_id", "att")) |>
+              by = c("resp_id", "att")) %>%
     summarize(pct_cor = mean(est == true),
               kappa = calc_kappa(est, true, min_score = 0, max_score = 1),
               type1 = mean(est == 1 & true == 0),
@@ -215,6 +223,7 @@ avg_prop <- function(values) {
   values <- z2r(values)
   values
 }
+
 
 ### Simulation functions -------------------------------------------------------
 # cond <- 1
@@ -263,8 +272,8 @@ single_sim <- function(cond, rep, attributes, items, sample_size, generate,
   lcdm <- suppressWarnings(
     measr_dcm(data = data$data, qmatrix = data$q_matrix,
               resp_id = "resp_id", item_id = "item_id",
-              type = "lcdm", method = "mcmc", backend = "rstan",
-              iter = 1500, warmup = 1000, chains = 2,
+              type = "lcdm", method = "mcmc", backend = "cmdstanr",
+              iter_sampling = 500, iter_warmup = 1500, chains = 2,
               cores = stan_cores, refresh = 0,
               control = list(adapt_delta = 0.99),
               prior = c(prior(normal(-1.5, 1), class = "intercept"),
@@ -275,8 +284,8 @@ single_sim <- function(cond, rep, attributes, items, sample_size, generate,
   dina <- suppressWarnings(
     measr_dcm(data = data$data, qmatrix = data$q_matrix,
               resp_id = "resp_id", item_id = "item_id",
-              type = "dina", method = "mcmc", backend = "rstan",
-              iter = 1500, warmup = 1000, chains = 2,
+              type = "dina", method = "mcmc", backend = "cmdstanr",
+              iter_sampling = 500, iter_warmup = 1500, chains = 2,
               cores = stan_cores, refresh = 0)
   )
 
@@ -292,16 +301,16 @@ single_sim <- function(cond, rep, attributes, items, sample_size, generate,
   # model comparisons -----
   loo <- loo_compare(lcdm, dina, criterion = "loo")
   loo_sig <- abs(loo[2, "elpd_diff"]) > (loo[2, "se_diff"] * 2.5)
-  loo_prefer <- loo |>
-    as_tibble(rownames = "model") |>
-    slice(1) |>
+  loo_prefer <- loo %>%
+    as_tibble(rownames = "model") %>%
+    slice(1) %>%
     pull(model)
 
   waic <- loo_compare(lcdm, dina, criterion = "waic")
   waic_sig <- abs(waic[2, "elpd_diff"]) > (waic[2, "se_diff"] * 2.5)
-  waic_prefer <- waic |>
-    as_tibble(rownames = "model") |>
-    slice(1) |>
+  waic_prefer <- waic %>%
+    as_tibble(rownames = "model") %>%
+    slice(1) %>%
     pull(model)
 
   # classification accuracy -----
@@ -362,9 +371,9 @@ single_sim <- function(cond, rep, attributes, items, sample_size, generate,
     lcdm_reli_con = mean(lcdm$reliability$map_reliability$consistency$consist),
     dina_reli_acc = mean(dina$reliability$map_reliability$accuracy$acc),
     dina_reli_con = mean(dina$reliability$map_reliability$consistency$consist)
-  ) |>
-    add_column(rep = rep, .before = 1) |>
-    add_column(cond = cond, .before = 1) |>
+  ) %>%
+    add_column(rep = rep, .before = 1) %>%
+    add_column(cond = cond, .before = 1) %>%
     write_rds(glue("{outdir}/results.rds"), compress = "gz")
 
   # return results -----
@@ -416,54 +425,54 @@ single_cond <- function(cond, attributes, items, sample_size, generate, reps,
                    stan_cores = stan_cores, seeds = seeds)
 
   # summarize condition results -----
-  all_cond_reps <- all_cond |>
-    map_dfr(pluck, "results") |>
+  all_cond_reps <- all_cond %>%
+    map_dfr(pluck, "results") %>%
     rename_with(~str_replace(.x, "ppp_type", "type"))
 
-  m2_res <- all_cond_reps |>
-    select(contains("m2_pval")) |>
-    mutate(generate = generate) |>
+  m2_res <- all_cond_reps %>%
+    select(contains("m2_pval")) %>%
+    mutate(generate = generate) %>%
     pivot_longer(cols = -generate, names_to = "estimate", values_to = "pval",
-                 names_pattern = "(.*)_m2_pval") |>
+                 names_pattern = "(.*)_m2_pval") %>%
     mutate(true_flag = estimate == "dina" & generate != "dina",
-           obs_flag = pval < .05) |>
+           obs_flag = pval < .05) %>%
     summarize(m2_type1 = sum(obs_flag & !true_flag) / sum(!true_flag),
               m2_type2 = sum(!obs_flag & true_flag) / sum(true_flag),
               m2_precision = sum(obs_flag & true_flag) / sum(obs_flag))
 
-  ppmc_res <- all_cond_reps |>
-    select(contains("ppmc_ppp")) |>
-    mutate(generate = generate) |>
+  ppmc_res <- all_cond_reps %>%
+    select(contains("ppmc_ppp")) %>%
+    mutate(generate = generate) %>%
     pivot_longer(cols = -generate, names_to = "estimate", values_to = "ppp",
-                 names_pattern = "(.*)_ppmc_ppp") |>
+                 names_pattern = "(.*)_ppmc_ppp") %>%
     mutate(true_flag = estimate == "dina" & generate != "dina",
-           obs_flag = ppp < .05) |>
+           obs_flag = ppp < .05) %>%
     summarize(ppmc_type1 = sum(obs_flag & !true_flag) / sum(!true_flag),
               ppmc_type2 = sum(!obs_flag & true_flag) / sum(true_flag),
               ppmc_precision = sum(obs_flag & true_flag) / sum(obs_flag))
 
-  comp_res <- all_cond_reps |>
-    select(matches("loo|waic")) |>
+  comp_res <- all_cond_reps %>%
+    select(matches("loo|waic")) %>%
     summarize(loo_correct = mean(loo_prefer == generate),
               loo_correct_same = mean(loo_prefer == generate | !loo_sig),
               waic_correct = mean(waic_prefer == generate),
               waic_correct_same = mean(waic_prefer == generate | !waic_sig))
 
-  attr_agree <- all_cond_reps |>
-    select(matches("_attr_")) |>
+  attr_agree <- all_cond_reps %>%
+    select(matches("_attr_")) %>%
     summarize(across(everything(), mean))
 
-  attr_reli <- all_cond_reps |>
-    select(matches("_reli_")) |>
+  attr_reli <- all_cond_reps %>%
+    select(matches("_reli_")) %>%
     summarize(across(everything(), mean))
 
   # return results -----
-  all_cond_reps <- all_cond_reps |>
+  all_cond_reps <- all_cond_reps %>%
     mutate(attributes = attributes, items = items,
            sample_size = sample_size, generate = generate,
            .after = cond)
   cond_summary <- bind_cols(m2_res, ppmc_res, comp_res, attr_agree,
-                            attr_reli) |>
+                            attr_reli) %>%
     mutate(cond = cond, attributes = attributes, items = items,
            sample_size = sample_size, generate = generate,
            .before = 1)
@@ -506,7 +515,7 @@ full_sim <- function(conditions, reps, stan_cores, seeds) {
 conditions <- crossing(attributes = 2:4,
                        items = c(5, 7, 10),
                        sample_size = c(500, 1000, 5000),
-                       generate = c("lcdm", "dina")) |>
+                       generate = c("lcdm", "dina")) %>%
   rowid_to_column(var = "cond")
 reps <- 100
 
@@ -524,7 +533,7 @@ if (length(keep_cond) == 0) {
   frst_cond <- min(conditions$cond)
   last_cond <- max(conditions$cond)
 }
-conditions <- conditions |>
+conditions <- conditions %>%
   filter(between(cond, frst_cond, last_cond))
 
 # Run simulation
