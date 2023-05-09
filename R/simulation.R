@@ -1,26 +1,19 @@
 ### Capture command line arguments ---------------------------------------------
-keep_cond <- commandArgs(trailingOnly = TRUE)
+keep_cond <- c(5, 54)
 frst_cond <- as.integer(keep_cond[1])
 last_cond <- as.integer(keep_cond[2])
 
 
 ### Setup ----------------------------------------------------------------------
-# install.packages("credentials")
-credentials::set_github_pat()
+# install.packages(c("remotes", "pak"))
+library(remotes)
+library(pak)
 
-# install.packages("tidyverse")
-# install.packages("here")
-# install.packages("fs")
-# install.packages("glue")
-# install.packages("modelr")
-# install.packages("remotes")
-# remotes::install_github("wjakethompson/portableParallelSeeds")
-#
-# install.packages("rstan", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
-# install.packages("StanHeaders", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
-# remotes::install_github("stan-dev/cmdstanr")
-# cmdstanr::install_cmdstan(cores = 3)
-# remotes::install_github("wjakethompson/measr")
+# Package dependencies are managed with the renv package. To install the package
+# versions used for this simulation, run renv::restore(), which will restore the
+# packages from renv.lock.
+
+# renv::restore()
 
 library(tidyverse)
 library(here)
@@ -227,11 +220,11 @@ avg_prop <- function(values) {
 
 ### Simulation functions -------------------------------------------------------
 # cond <- 1
-# rep <- 1
+# rep <- 4
 # attributes <- 2
 # items <- 5
 # sample_size <- 500
-# generate <- "lcdm"
+# generate <- "dina"
 # stan_cores <- 2
 # seeds <- read_rds(here("data", "random-seeds.rds"))
 single_sim <- function(cond, rep, attributes, items, sample_size, generate,
@@ -272,8 +265,8 @@ single_sim <- function(cond, rep, attributes, items, sample_size, generate,
   lcdm <- suppressWarnings(
     measr_dcm(data = data$data, qmatrix = data$q_matrix,
               resp_id = "resp_id", item_id = "item_id",
-              type = "lcdm", method = "mcmc", backend = "cmdstanr",
-              iter_sampling = 500, iter_warmup = 1500, chains = 2,
+              type = "lcdm", method = "mcmc", backend = "rstan",
+              iter = 2000, warmup = 1500, chains = 2,
               cores = stan_cores, refresh = 0,
               control = list(adapt_delta = 0.99),
               prior = c(prior(normal(-1.5, 1), class = "intercept"),
@@ -284,8 +277,8 @@ single_sim <- function(cond, rep, attributes, items, sample_size, generate,
   dina <- suppressWarnings(
     measr_dcm(data = data$data, qmatrix = data$q_matrix,
               resp_id = "resp_id", item_id = "item_id",
-              type = "dina", method = "mcmc", backend = "cmdstanr",
-              iter_sampling = 500, iter_warmup = 1500, chains = 2,
+              type = "dina", method = "mcmc", backend = "rstan",
+              iter = 2000, warmup = 1500, chains = 2,
               cores = stan_cores, refresh = 0)
   )
 
