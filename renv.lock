@@ -179,6 +179,12 @@
       "Version": "1.4.1",
       "Source": "Repository",
       "Repository": "CRAN",
+      "RemoteType": "standard",
+      "RemotePkgRef": "backports",
+      "RemoteRef": "backports",
+      "RemoteRepos": "https://cran.rstudio.com/",
+      "RemotePkgPlatform": "aarch64-apple-darwin20",
+      "RemoteSha": "1.4.1",
       "Requirements": [
         "R"
       ],
@@ -189,6 +195,12 @@
       "Version": "0.1-3",
       "Source": "Repository",
       "Repository": "CRAN",
+      "RemoteType": "standard",
+      "RemotePkgRef": "base64enc",
+      "RemoteRef": "base64enc",
+      "RemoteRepos": "https://cran.rstudio.com/",
+      "RemotePkgPlatform": "aarch64-apple-darwin20",
+      "RemoteSha": "0.1-3",
       "Requirements": [
         "R"
       ],
@@ -199,6 +211,12 @@
       "Version": "4.0.4",
       "Source": "Repository",
       "Repository": "CRAN",
+      "RemoteType": "standard",
+      "RemotePkgRef": "bit",
+      "RemoteRef": "bit",
+      "RemoteRepos": "https://cran.rstudio.com/",
+      "RemotePkgPlatform": "aarch64-apple-darwin20",
+      "RemoteSha": "4.0.4",
       "Requirements": [
         "R"
       ],
@@ -269,6 +287,12 @@
       "Version": "1.1.0",
       "Source": "Repository",
       "Repository": "CRAN",
+      "RemoteType": "standard",
+      "RemotePkgRef": "cellranger",
+      "RemoteRef": "cellranger",
+      "RemoteRepos": "https://cran.rstudio.com/",
+      "RemotePkgPlatform": "aarch64-apple-darwin20",
+      "RemoteSha": "1.1.0",
       "Requirements": [
         "R",
         "rematch",
@@ -822,6 +846,12 @@
       "Version": "1.0.1",
       "Source": "Repository",
       "Repository": "CRAN",
+      "RemoteType": "standard",
+      "RemotePkgRef": "ids",
+      "RemoteRef": "ids",
+      "RemoteRepos": "https://cran.rstudio.com/",
+      "RemotePkgPlatform": "aarch64-apple-darwin20",
+      "RemoteSha": "1.0.1",
       "Requirements": [
         "openssl",
         "uuid"
@@ -882,6 +912,12 @@
       "Version": "0.4.2",
       "Source": "Repository",
       "Repository": "CRAN",
+      "RemoteType": "standard",
+      "RemotePkgRef": "labeling",
+      "RemoteRef": "labeling",
+      "RemoteRepos": "https://cran.rstudio.com/",
+      "RemotePkgPlatform": "aarch64-apple-darwin20",
+      "RemoteSha": "0.4.2",
       "Requirements": [
         "graphics",
         "stats"
@@ -982,10 +1018,10 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "measr",
       "RemoteUsername": "wjakethompson",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "7c510b2e2ee7804604afe1007204e904e582f4a6",
+      "RemoteRepo": "measr",
+      "RemoteRef": "main",
+      "RemoteSha": "77289f9ced15cef3eade9a4eb82e676e97eb24ed",
       "Requirements": [
         "BH",
         "R",
@@ -1009,7 +1045,7 @@
         "tibble",
         "tidyr"
       ],
-      "Hash": "a2afbc0759813ca50bf13615dc96f4a3"
+      "Hash": "647c92bfe3478667132aab39694c93b9"
     },
     "memoise": {
       "Package": "memoise",
@@ -1081,6 +1117,12 @@
       "Version": "0.5.0",
       "Source": "Repository",
       "Repository": "CRAN",
+      "RemoteType": "standard",
+      "RemotePkgRef": "munsell",
+      "RemoteRef": "munsell",
+      "RemoteRepos": "https://cran.rstudio.com/",
+      "RemotePkgPlatform": "aarch64-apple-darwin20",
+      "RemoteSha": "0.5.0",
       "Requirements": [
         "colorspace",
         "methods"
@@ -1357,6 +1399,12 @@
       "Version": "1.0.1",
       "Source": "Repository",
       "Repository": "CRAN",
+      "RemoteType": "standard",
+      "RemotePkgRef": "rematch",
+      "RemoteRef": "rematch",
+      "RemoteRepos": "https://cran.rstudio.com/",
+      "RemotePkgPlatform": "aarch64-apple-darwin20",
+      "RemoteSha": "1.0.1",
       "Hash": "c66b930d20bb6d858cd18e1cebcfae5c"
     },
     "rematch2": {
@@ -1546,6 +1594,12 @@
       "Version": "0.4-2",
       "Source": "Repository",
       "Repository": "CRAN",
+      "RemoteType": "standard",
+      "RemotePkgRef": "selectr",
+      "RemoteRef": "selectr",
+      "RemoteRepos": "https://cran.rstudio.com/",
+      "RemotePkgPlatform": "aarch64-apple-darwin20",
+      "RemoteSha": "0.4-2",
       "Requirements": [
         "R",
         "R6",
