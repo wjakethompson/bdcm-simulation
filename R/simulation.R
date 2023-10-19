@@ -1,5 +1,5 @@
 ### Capture command line arguments ---------------------------------------------
-keep_cond <- c(5, 54)
+keep_cond <- c(21, 54)
 frst_cond <- as.integer(keep_cond[1])
 last_cond <- as.integer(keep_cond[2])
 
@@ -120,7 +120,7 @@ generate_data <- function(attributes, items, sample_size, generate) {
                             TRUE ~ (0.9 / (attributes - 1))))
 
   q_matrix <- crossing(att = paste0("att", seq_len(attributes)),
-           item = seq_len(items)) %>%
+                       item = seq_len(items)) %>%
     pmap_dfr(qmatrix_entries, all_entries = all_entries) %>%
     mutate(item_id = paste0("item_", sprintf("%02d", 1:n())),
            .before = 1)
@@ -157,7 +157,7 @@ generate_data <- function(attributes, items, sample_size, generate) {
   return(ret_list)
 }
 calc_kappa <- function(score1, score2, min_score, max_score) {
-    if (missing(min_score)) {
+  if (missing(min_score)) {
     min_score <- min(min(score1), min(score2))
   }
   if (missing(max_score)) {
@@ -506,11 +506,11 @@ full_sim <- function(conditions, reps, stan_cores, seeds) {
 
 ### Run simulation -------------------------------------------------------------
 conditions <- crossing(attributes = 2:4,
-                       items = c(5, 7, 10),
-                       sample_size = c(500, 1000, 5000),
+                       items = c(5, 7),
+                       sample_size = c(500, 1000, 3000),
                        generate = c("lcdm", "dina")) %>%
   rowid_to_column(var = "cond")
-reps <- 100
+reps <- 50
 
 # Create seeds
 if (file_exists(here("data", "random-seeds.rds"))) {
@@ -527,6 +527,7 @@ if (length(keep_cond) == 0) {
   last_cond <- max(conditions$cond)
 }
 conditions <- conditions %>%
+  filter(sample_size %in% c(500, 1000)) %>%
   filter(between(cond, frst_cond, last_cond))
 
 # Run simulation
