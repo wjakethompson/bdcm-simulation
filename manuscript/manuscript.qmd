@@ -1,0 +1,131 @@
+---
+title: "An Evaluation of Methods for Assessing Model Fit for Diagnostic Classification Models"
+blank-lines-above-title: 2
+shorttitle: "Model Fit for DCMs"
+author:
+  - name: W. Jake Thompson
+    corresponding: true
+    orcid: 0000-0001-7339-0300
+    email: jakethompson@ku.edu
+    affiliations:
+      - name: "University of Kansas"
+        department: Accessible Teaching, Learning, and Assessment Systems (ATLAS)
+        address: 1122 West Campus Road
+        city: Lawrence
+        region: KS
+        postal-code: 66045-3101
+author-note:
+  blank-lines-above-author-note: 1
+  disclosures:
+    conflict-of-interest: The author has no conflict of interest to declare.
+    financial-support: This study was supported by Grant R305D210045 from the Institute for Education Sciences.
+abstract: "This document is a template demonstrating the apaquarto format."
+keywords: [keyword1, keyword2, keyword3]
+bibliography: ["bib/bibliography.bib", "bib/packages.bib"]
+format:
+  apaquarto-docx: default
+---
+
+{{< include _extensions/wjschne/apaquarto/_apa_title.qmd >}}
+
+```{r}
+#| label: setup
+
+library(conflicted)
+library(tidyverse)
+library(flextable)
+library(ftExtra)
+library(officer)
+library(knitr)
+library(commonmark)
+library(here)
+library(glue)
+library(fs)
+library(english)
+
+conflicts_prefer(dplyr::filter, .quiet = TRUE)
+conflicts_prefer(flextable::separate_header, .quiet = TRUE)
+
+```
+
+Some background info here...
+
+
+# Method
+
+To evaluate the performance of absolute and relative fit indices for DCMs, we conducted a simulation study.
+In this study, we manipulated the number of assessed attributes (2 or 3), the minimum number of items measuring each attribute (5 or 7), the sample size (500 or 1,000).
+Additionally, we also manipulated the data generating model (LCDM or DINA) in order to evaluate the performance of model fit metrics when the estimated model should and should not fit the data.
+We used a full factorial design, resulting in 16 total conditions, with 50 replications per condition.
+
+The simulation and subsequent analyses were conducted in R version `r getRversion()` [@R-base].
+All DCMs were estimated using the measr package [@thompson-joss-2023; @R-measr].
+
+# Results
+
+
+## Descriptive Statistics
+
+Here we describe the basic characteristics of our primary variables.
+
+Let's make a figure. A reference label for a figure in APA format must have the prefix `apafg-`. This is different from the usual Quarto prefix `fig-`.
+
+```{r}
+#| label: apafg-myplot
+#| apa-cap: This is the figure caption.
+#| apa-note: This is a note below the figure.
+#| out-width: "100%"
+
+plot(1:10)
+```
+
+
+We can make a table the same way as a figure except that the label prefix is `apatb-`. Again, this is different from the usual quarto prefix `tbl-`, which will put the table table caption in the wrong place and with non-APA formatting. Generating a table that conforms to APA format in all document formats can be tricky. Feel free to experiment with different methods, but I have found that David Gohel's [flextable](https://davidgohel.github.io/flextable/) to be the best option.
+
+```{r apatb-mytable}
+#| apa-cap: Here is the table caption. 
+#| apa-note: Here is the note below the table.
+#| ft.align: left
+tibble(Numbers = seq(1,4), Letters = LETTERS[seq(Numbers)]) |> 
+  flextable() |>
+  theme_apa() |>
+  line_spacing(part = "all") |>
+  padding(padding.top = 5, padding.bottom = 5)
+
+```
+
+# Discussion
+
+Describe results in non-statistical terms.
+
+## Limitations and Future Directions
+
+Every study has limitations. Based on this study, some additional steps might include...
+
+## Conclusion
+
+Let's sum this up.
+
+# References
+
+```{r}
+#| label: write-citations
+#| include: false
+knitr::write_bib(unique(c(renv::dependencies()$Package,
+                          tidyverse_packages(),
+                          "base", "measr")),
+                 file = here("manuscript", "bib", "packages.bib"))
+
+# Correct capitalization in packages
+read_lines(here("manuscript", "bib", "packages.bib")) |>
+  str_replace_all(" Stan", " {Stan}") |>
+  str_replace_all("measr:", "{measr}:") |> 
+  str_replace_all("rstan:", "{RStan}:") |>
+  str_replace_all("Bayesian", "{Bayesian}") |>
+  str_replace_all("loo:", "{loo}:") |>
+  str_replace_all("WAIC", "{WAIC}") |>
+  write_lines("bib/packages.bib")
+```
+
+::: {#refs}
+:::
