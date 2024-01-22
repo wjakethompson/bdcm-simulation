@@ -1,5 +1,5 @@
 ### Capture command line arguments ---------------------------------------------
-keep_cond <- c(21, 54)
+keep_cond <- c(1, 36)
 frst_cond <- as.integer(keep_cond[1])
 last_cond <- as.integer(keep_cond[2])
 
@@ -527,7 +527,8 @@ if (length(keep_cond) == 0) {
   last_cond <- max(conditions$cond)
 }
 conditions <- conditions %>%
-  filter(sample_size %in% c(500, 1000)) %>%
+  filter(attributes %in% c(2, 3),
+         sample_size %in% c(500, 1000)) %>%
   filter(between(cond, frst_cond, last_cond))
 
 # Run simulation
