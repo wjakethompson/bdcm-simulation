@@ -18,6 +18,7 @@ customclasses = {
   "Author", 
   "AuthorNote",
   "Abstract", 
+  "AbstractFirstParagraph", 
   "FigureTitle", 
   "FigureNote", 
   "FigureWithNote", 
@@ -25,7 +26,10 @@ customclasses = {
   "Caption",
   "Compact",
   "NoIndent",
-  "NextBlockText"
+  "NextBlockText",
+  "AfterWithoutNote",
+  "H4",
+  "H5"
 }
 
 -- Consult some value
@@ -33,11 +37,14 @@ _set = utils_Set(customclasses)
 
 
 -- https://jmablog.com/post/pandoc-filters/
-function Div (elem)
-    if _set[elem.classes[1]] then
-      elem.attributes['custom-style'] = elem.classes[1]
-      return elem
-    else
-      return elem
-    end
+local function customstyler(elem)
+  if _set[elem.classes[1]] then
+    elem.attributes['custom-style'] = elem.classes[1]
+    return elem
+  end
 end
+
+return {
+  {Span = customstyler},
+  {Div = customstyler}
+}
