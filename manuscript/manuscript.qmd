@@ -1,7 +1,7 @@
 ---
-title: "An Evaluation of Methods for Assessing Model Fit for Diagnostic Classification Models"
+title: "An Evaluation of Methods for Assessing Model Fit for Bayesian Diagnostic Classification Models"
 blank-lines-above-title: 2
-shorttitle: "Model Fit for DCMs"
+shorttitle: "Model Fit for BDCMs"
 author:
   - name: W. Jake Thompson
     corresponding: true
@@ -18,18 +18,23 @@ author-note:
   blank-lines-above-author-note: 1
   disclosures:
     conflict-of-interest: The author has no conflict of interest to declare.
-    financial-support: This study was supported by Grant R305D210045 from the Institute for Education Sciences.
+    financial-support: This work was supported by the Institute for Education Sciences [grant number R305D210045].
 abstract: "This document is a template demonstrating the apaquarto format."
-keywords: [keyword1, keyword2, keyword3]
+keywords: [diagnostic assessment, model fit, classification]
 bibliography: ["bib/bibliography.bib", "bib/packages.bib"]
 format:
-  apaquarto-docx: default
+  apaquarto-docx:
+    floatsintext: true
+  apaquarto-html:
+    floatsintext: true
+knitr:
+  opts_chunk: 
+    echo: false
 ---
-
-{{< include _extensions/wjschne/apaquarto/_apa_title.qmd >}}
 
 ```{r}
 #| label: setup
+#| include: false
 
 library(conflicted)
 library(tidyverse)
@@ -42,10 +47,11 @@ library(here)
 library(glue)
 library(fs)
 library(english)
+library(ratlas)
+library(ggtext)
 
 conflicts_prefer(dplyr::filter, .quiet = TRUE)
 conflicts_prefer(flextable::separate_header, .quiet = TRUE)
-
 ```
 
 Some background info here...
@@ -55,44 +61,309 @@ Some background info here...
 
 To evaluate the performance of absolute and relative fit indices for DCMs, we conducted a simulation study.
 In this study, we manipulated the number of assessed attributes (2 or 3), the minimum number of items measuring each attribute (5 or 7), the sample size (500 or 1,000).
-Additionally, we also manipulated the data generating model (LCDM or DINA) in order to evaluate the performance of model fit metrics when the estimated model should and should not fit the data.
-We used a full factorial design, resulting in 16 total conditions, with 50 replications per condition.
+These factors were chosen to represent test designs that are commonly seen in applied research [e.g., @ecpe; @dtmr].
+Using a full factorial design, these factors resulted in a total of 8 test design conditions.
+Within each test design condition, we also manipulated the data generating model (LCDM or DINA) and the estimated model (LCDM or DINA) in order to evaluate the performance of model fit metrics when the estimated model should and should not fit the data.
+With fully crossed data generating and estimating models, there are 4 modeling conditions within each condition, resulting in a total of 32 conditions across all test designs.
+We conducted 50 replications per condition.
 
 The simulation and subsequent analyses were conducted in R version `r getRversion()` [@R-base].
-All DCMs were estimated using the measr package [@thompson-joss-2023; @R-measr].
+All DCMs were estimated using *Stan* [version `r rstan::stan_version()`, @stan] via the measr package [@thompson-joss-2023; @R-measr], and replications were conducted on AWS EC2 instances using the portableParallelSeeds package [@R-portableParallelSeeds].
+All R code for the simulation and subsequent analyses is available in a public OSF project repository.^[https://osf.io/t5v96/]
 
-# Results
+## Data Generation
 
+The data generation followed the design of the data simulations used by @johnson2018 and @thompson2023 in their evaluation of reliability indices for DCMs.
+In this study, the number of respondents was determined by the simulation condition.
+The true attribute profile for each respondent was determined by a random draw from all possible profiles.
+Additionally, each simulated assessment measured 2 or 3 attributes, which each attribute measured by at least 5 or 7 items.
+The total number of items for each simulated assessment is therefore the product of the number of attributes and the minimum number of items for each attribute.
+In the simulation, the Q-matrix for each simulated assessment was specified such that the first 3 items measuring each attribute are single-attribute items.
+The remaining 2 or 4 items for each attribute (for the 5 and 7 item conditions, respectively) had a 50% chance of also measuring a second attribute.
 
-## Descriptive Statistics
+Item parameter generation was dependent on the data generating model.
+In conditions where data was generated from the LCDM, item parameters included item intercepts, main effects, and interactions, all of which are on the log-odds scale.
+Item intercepts were drawn from a uniform distribution ranging from -3.0 to 0.6, main effects were drawn from a uniform distribution ranging from 1.0 to 5.0.
+In the LCDM interaction terms are constrained to be greater than -1 times the smallest main effect.
+Thus, the interaction parameters were drawn from a uniform distribution ranging from the calculated lower bound to 2.0.
+In conditions where data was generated from the DINA model, item parameters include the slipping and guessing parameters, which are both on the probability scale.
+For consistency with the simulation of LCDM data, parameters were generated on the log-odds scale and converted to probability values.
+Guessing parameters were drawn from a uniform distribution ranging from -3.0 to 0.6, consistent with the LCDM intercepts.
+The final guessing parameters were then calculated as the inverse logit of the generated parameter.
+Slipping parameters were generated from a uniform distribution ranging from 1.0 to 5.0, consistent with the main effects in the LCDM.
+Because the slipping parameter represents the probability of *not* providing a correct response when a respondent is proficient on the measured attributes, the final slipping parameter was calculated as 1 minus the inverse logit of the generated parameter value.
 
-Here we describe the basic characteristics of our primary variables.
+The generated attribute profiles, Q-matrix, and item parameters were then used to simulate an data set for each replication.
 
-Let's make a figure. A reference label for a figure in APA format must have the prefix `apafg-`. This is different from the usual Quarto prefix `fig-`.
+## Simulation Process and Analysis
+
+After generating the data, both an LCDM and DINA model were estimated on the simulated data set.
+We then calculated both absolute fit (i.e., M~2~ and raw score PPMC &chi;^2^) and relative fit (i.e., WAIC, LOO) indices for each model.
+All of these indices were calculated for both estimated models in order to evaluate their performance under different conditions of known model specifications.
+When data was generated from the LCDM, we expect the LCDM to show adequate model fit and be the preferred model, as the DINA model is under-specified.
+On the other hand, when data was generated from the DINA model, we expect both models to show adequate absolute fit, as the LCDM subsumes the DINA model.
+However, because the LCDM is over-specified in this condition, we expect the DINA model to be preferred by the relative fit indices.
+
+For each absolute fit index, an estimated model was flagged for misfit if the *p*-value or *ppp* was less than .05 for the M~2~ and PPMC &chi;^2^, respectively.
+We then used the flags to calculate the positive and negative predictive values [@altman1994; @smith2012].
+The positive predictive value (PPV) is the proportion of positive results that are true positives. That is, the proportion of models where the fit index indicated poor model fit, where we expect poor model fit.
+Similarly the negative predictive value (NPV) is the proportion of models where the where fit index indicated adequate model fit, and we expect adequate fit.
+
+Finally, for relative fit, we determined the preferred model by calculating the difference between the LOO for each of the estimated models, as well as the standard error of the difference.
+Using the criteria suggested by @bengio2004, if the difference between the criterion for the LCDM and DINA was greater than 2.5 times the standard error of the difference, we determined the preferred model to be the model with the lowest index value.
+If the difference was less than 2.5 times the standard error, we determined the models to be equally fitting and therefore selected the more parsimonious model (i.e., the DINA model) as the preferred model.
+We then calculated the proportion of replications within each condition where the LOO selected the correct model (i.e., the model that was used to generate the data).
+
+The expected results for each combination of generating and estimating model are shown in @tbl-exp-results summarizes the expected model fit results for each of the modeling conditions.
 
 ```{r}
-#| label: apafg-myplot
-#| apa-cap: This is the figure caption.
-#| apa-note: This is a note below the figure.
-#| out-width: "100%"
-
-plot(1:10)
-```
-
-
-We can make a table the same way as a figure except that the label prefix is `apatb-`. Again, this is different from the usual quarto prefix `tbl-`, which will put the table table caption in the wrong place and with non-APA formatting. Generating a table that conforms to APA format in all document formats can be tricky. Feel free to experiment with different methods, but I have found that David Gohel's [flextable](https://davidgohel.github.io/flextable/) to be the best option.
-
-```{r apatb-mytable}
-#| apa-cap: Here is the table caption. 
-#| apa-note: Here is the note below the table.
+#| label: tbl-exp-results
+#| tbl-cap: Expected model fit results
+#| apa-note: |
+#|   LCDM = loglinear cognitive diagnostic model;
+#|   DINA = diagnostic input, noisy "and" gate.
 #| ft.align: left
-tibble(Numbers = seq(1,4), Letters = LETTERS[seq(Numbers)]) |> 
+
+crossing(generate = c("LCDM", "DINA"), estimate = c("LCDM", "DINA")) |> 
+  mutate(abs = case_when(generate == estimate | estimate == "LCDM" ~ "No",
+                         .default = "Yes"),
+         rel = generate) |> 
+  rename(`Generating model` = generate,
+         `Estimated model` = estimate,
+         `Absolute fit flag` = abs,
+         `Relative fit preference` = rel) |> 
   flextable() |>
+  merge_v(j = c("Generating model", "Relative fit preference")) |> 
+  hline(i = 2) |> 
+  width(width = 1.2) |> 
   theme_apa() |>
   line_spacing(part = "all") |>
   padding(padding.top = 5, padding.bottom = 5)
-
 ```
+
+
+# Results
+
+```{r}
+#| label: read-results
+#| include: false
+
+results <- read_rds(here("output", "sim_results.rds")) |> 
+  pluck("all_reps")
+```
+
+## Absolute Model Fit
+
+```{r}
+#| label: calc-abs-fit
+#| include: false
+
+ppv <- function(x, truth, estimate) {
+  x |> 
+    select({{ truth }}, {{ estimate }}) |> 
+    summarize(ppv = sum({{ truth }} & {{ estimate }}) / 
+                sum({{ estimate }})) |> 
+    pull(ppv)
+}
+npv <- function(x, truth, estimate) {
+  x |> 
+    select({{ truth }}, {{ estimate }}) |> 
+    summarize(npv = sum(!{{ truth }} & !{{ estimate }}) /
+                sum(!{{ estimate }})) |> 
+    pull(npv)
+}
+
+abs_fit <- results |> 
+  select(cond:rep, starts_with("lcdm_"), starts_with("dina_")) |> 
+  pivot_longer(cols = -c(cond:rep),
+               names_to = c("estimate", "metric"),
+               names_pattern = c("([a-z]{4})_(.*)"),
+               values_to = "value") |> 
+  pivot_wider(names_from = metric, values_from = value) |> 
+  relocate(estimate, .after = generate) |> 
+  select(cond:rep, m2, m2_pval, ppmc_ppp) |> 
+  mutate(true_flag = generate == "lcdm" & estimate == "dina",
+         m2_flag = m2_pval < .05,
+         ppmc_flag = ppmc_ppp < .05)
+
+cond_abs_fit <- abs_fit |> 
+  nest(flags = -c(attributes, items, sample_size)) |> 
+  mutate(m2_ppv = map_dbl(flags,
+                          \(x) ppv(x, truth = true_flag, estimate = m2_flag)),
+         m2_npv = map_dbl(flags,
+                          \(x) npv(x, truth = true_flag, estimate = m2_flag)),
+         ppmc_ppv = map_dbl(flags,
+                          \(x) ppv(x, truth = true_flag, estimate = ppmc_flag)),
+         ppmc_npv = map_dbl(flags,
+                          \(x) npv(x, truth = true_flag, estimate = ppmc_flag)))
+
+overall_abs_fit <- abs_fit |> 
+  select(cond:rep, m2, m2_pval, ppmc_ppp) |> 
+  mutate(true_flag = generate == "lcdm" & estimate == "dina",
+         m2_flag = m2_pval < .05,
+         ppmc_flag = ppmc_ppp < .05) |> 
+  nest(flags = everything()) |> 
+  mutate(m2_ppv = map_dbl(flags,
+                          \(x) ppv(x, truth = true_flag, estimate = m2_flag)),
+         m2_npv = map_dbl(flags,
+                          \(x) npv(x, truth = true_flag, estimate = m2_flag)),
+         ppmc_ppv = map_dbl(flags,
+                          \(x) ppv(x, truth = true_flag, estimate = ppmc_flag)),
+         ppmc_npv = map_dbl(flags,
+                          \(x) npv(x, truth = true_flag, estimate = ppmc_flag))) |> 
+  select(-flags) |> 
+  pivot_longer(cols = everything()) |> 
+  deframe()
+```
+
+Across all conditions, the M~2~ statistic had a PPV of `r fmt_leading_zero(fmt_digits(overall_abs_fit["m2_ppv"], digits = 3))` and an NPV of `r fmt_leading_zero(fmt_digits(overall_abs_fit["m2_npv"], digits = 3))`.
+In contrast the PPMC &chi;^2^ had a PPV of `r fmt_leading_zero(fmt_digits(overall_abs_fit["ppmc_ppv"], digits = 3))` and an NPV of `r fmt_leading_zero(fmt_digits(overall_abs_fit["ppmc_npv"], digits = 3))`.
+This indicates that a negative test value for both metrics (i.e., a non-significant result) are usually true negatives.
+On the other hand, a positive test result (i.e., a significant result that indicates model misfit) was a true positive only `r fmt_prop_pct(overall_abs_fit["m2_ppv"])`% of the time for the M~2~ statistic, compared to `r fmt_prop_pct(overall_abs_fit["ppmc_ppv"])`% of the time for the PPMC &chi;^2^ statistic.
+
+When looking at the PPV and NPV values by test design condition, as show in @fig-abs-cond, we see that the NPV values for each metric are similar for all test designs.
+This is consistent with the overall results, which showed similar NPVs for the M~2~ and PPMC &chi;^2^.
+However, the PPV for the M~2~ is consistently lower than the PPV for the PPMC &chi;^2^.
+This difference becomes more pronounced as the data set becomes larger (i.e., larger samples, more attributes).
+Thus, as the sample gets larger and the test design gets more complex, the M~2~ becomes more likely to result in a false positive, indicating model misfit when there is none.
+On the other hand, the PPMC &chi;^2^ demonstrated consistently high PPV values across all simulation conditions.
+
+```{r}
+#| label: fig-abs-cond
+#| fig-cap: Positive and negative predictive values, by test design condition
+#| out-width: "100%"
+
+cond_abs_fit |> 
+  select(-flags) |> 
+  pivot_longer(cols = matches("_[pn]pv$")) |> 
+  separate_wider_delim(name, delim = "_", names = c("fit_meas", "stat")) |> 
+  mutate(attributes = factor(attributes, levels = c(2, 3),
+                             labels = c("Two attributes", "Three attributes")),
+         items = factor(items, levels = c(5, 7)),
+         sample_size = factor(sample_size, levels = c(500, 1000),
+                              labels = c("500", "1,000")),
+         fit_meas = factor(fit_meas, levels = c("m2", "ppmc"),
+                           labels = c("M<sub>2</sub>", "PPMC &chi;^2^")),
+         stat = factor(stat, levels = c("ppv", "npv"),
+                       labels = c("Positive predictive value",
+                                  "Negative predictive value")),
+         grp = paste0(attributes, items, fit_meas)) |> 
+  ggplot() +
+  facet_grid(cols = vars(attributes), rows = vars(stat)) +
+  geom_point(aes(x = sample_size, y = value, shape = items, color = fit_meas)) +
+  geom_line(aes(x = sample_size, y = value, linetype = items, color = fit_meas,
+                group = grp)) +
+  scale_color_okabeito() +
+  expand_limits(y = c(0.6, 1)) +
+  labs(x = "Sample size", y = "Predictive value",
+       shape = "Items per attribute", linetype = "Items per attribute",
+       color = "Absolute fit metric") +
+  theme_atlas() +
+  theme(strip.text.y = element_markdown(),
+        legend.text = element_markdown())
+```
+
+## Relative Model Fit
+
+```{r}
+#| label: calc-rel-fit
+#| include: false
+
+both_fit <- abs_fit |> 
+  select(cond:rep, ppmc_ppp) |> 
+  pivot_wider(names_from = estimate, values_from = ppmc_ppp) |> 
+  filter(lcdm > .05, dina > .05)
+
+rel_fit <- results |> 
+  semi_join(both_fit,
+            join_by(cond, attributes, items, sample_size, generate, rep)) |> 
+  select(cond:rep, starts_with("loo_"), starts_with("waic_")) |> 
+  mutate(loo_decision = case_when(!loo_sig & generate == "dina" ~ "correct",
+                                  !loo_sig & generate != "dina" ~ "wrong",
+                                  loo_prefer == generate ~ "correct",
+                                  loo_prefer != generate ~ "wrong"))
+
+cond_rel_fit <- rel_fit |> 
+  summarize(reps = n(),
+            loo_correct = sum(loo_decision == "correct"),
+            loo_wrong = sum(loo_decision == "wrong"),
+            .by = c(attributes, items, sample_size, generate)) |> 
+    mutate(pct_correct = loo_correct / reps)
+
+overall_rel_fit <- rel_fit |> 
+  summarize(loo_correct = sum(loo_decision == "correct"),
+            loo_wrong = sum(loo_decision == "wrong")) |> 
+  pivot_longer(cols = everything()) |> 
+  deframe()
+```
+
+As previously discussed, evaluations of relative fit are only meaningful when the competing models have been found to have adequate absolute model fit.
+Accordingly, for the relative fit results, we filtered the simulation output to only include replications where both the LCDM and DINA model showed adequate absolute model fit.
+Based on the absolute fit findings in the previous section, we used the PPMC &chi;^2^ statistic to determine absolute fit.
+@tbl-both-abs-fit shows the number of replications by test design condition and data generating model where both estimated model demonstrated adequate absolute fit.
+As expected, both the estimated DINA and LCDM models often had adequate absolute fit when data was generated from the DINA model, as the LCDM subsumes the DINA model.
+In contrast, it was much less likely that both models would show adequate absolute fit when data was generated from the LCDM model.
+
+```{r}
+#| label: tbl-both-abs-fit
+#| tbl-cap: Number of replications where both models demonstrated absolute fit
+#| apa-note: |
+#|   LCDM = loglinear cognitive diagnostic model;
+#|   DINA = diagnostic input, noisy "and" gate.
+#| ft.align: left
+
+both_fit |> 
+  count(attributes, items, sample_size, generate) |> 
+  pivot_wider(names_from = "generate", values_from = "n") |> 
+  mutate(across(c("dina", "lcdm"), \(x) replace_na(x, 0)),
+         across(everything(), as.integer)) |> 
+  rename(Attributes = attributes, Items = items, `Sample size` = sample_size,
+         DINA = dina, LCDM = lcdm) |> 
+  flextable() |>
+  add_header_row(values = c("Test designs", "Data generating model"),
+                 colwidths = c(3, 2)) |> 
+  width(width = 1.2) |> 
+  theme_apa() |>
+  line_spacing(part = "all") |>
+  padding(padding.top = 5, padding.bottom = 5)
+```
+
+Overall, across all conditions, the LOO determined the correct model in `r fmt_prop_pct(overall_rel_fit["loo_correct"] / (nrow(both_fit)))`% of replications.
+@fig-rel-cond shows the percentage of replications where the LOO selected the correct model by test design condition and data generating model.
+Across all test design conditions, when the LCDM was used to generate the data and both the LCDM and DINA model showed adequate absolute fit, the LOO always selected correct model (i.e., the LCDM).
+On the other hand, when the DINA model was used to generate the data, the LOO selected the LCDM as the preferred model in up to `r fmt_prop_pct(1 - min(cond_rel_fit$pct_correct))`% of replications (the three attribute, 7 item, and 1,000 sample size condition).
+Thus, even when the DINA model was used to generate the data and the estimated DINA model showed adequate model fit, the LOO still 
+
+```{r}
+#| label: fig-rel-cond
+#| fig-cap: Correct model selections, by test design condition
+#| out-width: "100%"
+
+cond_rel_fit |> 
+  select(attributes:reps, pct_correct) |> 
+  mutate(attributes = factor(attributes, levels = c(2, 3),
+                             labels = c("Two attributes", "Three attributes")),
+         items = factor(items, levels = c(5, 7)),
+         sample_size = factor(sample_size, levels = c(500, 1000),
+                              labels = c("500", "1,000")),
+         generate = factor(generate, levels = c("dina", "lcdm"),
+                           labels = c("DINA", "LCDM")),
+         grp = paste0(attributes, items, generate)) |> 
+  ggplot() +
+  facet_grid(cols = vars(attributes)) +
+  geom_point(aes(x = sample_size, y = pct_correct, shape = items, color = generate)) +
+  geom_line(aes(x = sample_size, y = pct_correct, linetype = items, color = generate, group = grp)) +
+  scale_y_percent() +
+  scale_color_okabeito() +
+  expand_limits(y = c(0.6, 1)) +
+  labs(x = "Sample size", y = "Repetitions With Correct Selection",
+       color = "Data generating model",
+       shape = "Items per attribute", linetype = "Items per attribute") +
+  theme_atlas() +
+  theme(strip.text.y = element_markdown(),
+        legend.text = element_markdown())
+```
+
 
 # Discussion
 
@@ -111,9 +382,11 @@ Let's sum this up.
 ```{r}
 #| label: write-citations
 #| include: false
+
 knitr::write_bib(unique(c(renv::dependencies()$Package,
                           tidyverse_packages(),
-                          "base", "measr")),
+                          "base", "measr", "portableParallelSeeds",
+                          "rstan")),
                  file = here("manuscript", "bib", "packages.bib"))
 
 # Correct capitalization in packages
@@ -124,7 +397,7 @@ read_lines(here("manuscript", "bib", "packages.bib")) |>
   str_replace_all("Bayesian", "{Bayesian}") |>
   str_replace_all("loo:", "{loo}:") |>
   str_replace_all("WAIC", "{WAIC}") |>
-  write_lines("bib/packages.bib")
+  write_lines(here("manuscript", "bib", "packages.bib"))
 ```
 
 ::: {#refs}
