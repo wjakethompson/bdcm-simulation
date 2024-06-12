@@ -49,6 +49,7 @@ library(fs)
 library(english)
 library(ratlas)
 library(ggtext)
+library(wjake)
 
 conflicts_prefer(dplyr::filter, .quiet = TRUE)
 conflicts_prefer(flextable::separate_header, .quiet = TRUE)
@@ -332,7 +333,8 @@ Overall, across all conditions, the LOO determined the correct model in `r fmt_p
 @fig-rel-cond shows the percentage of replications where the LOO selected the correct model by test design condition and data generating model.
 Across all test design conditions, when the LCDM was used to generate the data and both the LCDM and DINA model showed adequate absolute fit, the LOO always selected correct model (i.e., the LCDM).
 On the other hand, when the DINA model was used to generate the data, the LOO selected the LCDM as the preferred model in up to `r fmt_prop_pct(1 - min(cond_rel_fit$pct_correct))`% of replications (the three attribute, 7 item, and 1,000 sample size condition).
-Thus, even when the DINA model was used to generate the data and the estimated DINA model showed adequate model fit, the LOO still 
+Thus, even when the DINA model was used to generate the data and the estimated DINA model showed adequate model fit, the LOO still preferred the more complex model in some situations.
+However, even with a slight preference for the more complex model, the LOO still identified the correct model in greater than `r fmt_prop_pct(round_to(min(cond_rel_fit$pct_correct), .05, direction = "down"))`% of replications in all conditions.
 
 ```{r}
 #| label: fig-rel-cond
@@ -367,15 +369,31 @@ cond_rel_fit |>
 
 # Discussion
 
-Describe results in non-statistical terms.
+In this study, we examined the performance absolute and relative model fit indices for Bayesian DCMs.
+Overall, the findings indicate support for the use of Bayesian estimation for DCMs in order to facilitate the use of Bayesian methods for model evaluation.
+
+For evaluating absolute model fit, we examined the M~2~ and PPMC &chi;^2^ statistics.
+Across all conditions, the M~2~ statistic performed well, with results consistent with previous research evaluating the efficacy of the method [e.g., @liu2016].
+However, the PPMC &chi;^2^ statistic showed comparable or improved performance in all conditions.
+This was particularly true when examining the positive predictive value for each statistic (i.e., the probability that a flag is actually indicative of model misfit).
+Although both the M~2~ and PPMC &chi;^2^ had similar negative predictive values, the PPMC &chi;^2^ had consistently higher positive predictive values.
+Thus, when using the PPMC &chi;^2^, practitioners can have more confidence that a positive test result truly indicates model misfit.
+
+Bayesian methods offer different methods for evaluating relative model fit than are appropriate when using a maximum likelihood estimation.
+Whereas indices such as the AIC and BIC can be used when models are estimated using maximum likelihood estimation, the LOO is used for Bayesian models.
+In this study, the LOO showed good performance, selecting the correct model in `r fmt_prop_pct(overall_rel_fit["loo_correct"] / (nrow(both_fit)))`% of replications.
+In contrast, the AIC and BIC have been found to identify the correct model in as few as 30% of replications [@sen2017].
+This means that using a Bayesian estimation process in order to access the LOO for model comparison offers a marked improvement over methods that are used with a maximum likelihood estimation.
 
 ## Limitations and Future Directions
 
-Every study has limitations. Based on this study, some additional steps might include...
+There are some limitations to the present study.
+For example, we only investigated 
 
 ## Conclusion
 
-Let's sum this up.
+Model fit is a crucial evaluation of model performance for any psychometric model, including DCMs.
+The present study demonstrates the greater utility of absolute and relative fit indices that can be used with a Bayesian estimation procedure for DCMs.
 
 # References
 
