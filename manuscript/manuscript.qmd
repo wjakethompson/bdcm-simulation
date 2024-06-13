@@ -70,7 +70,7 @@ We conducted 50 replications per condition.
 
 The simulation and subsequent analyses were conducted in R version `r getRversion()` [@R-base].
 All DCMs were estimated using *Stan* [version `r rstan::stan_version()`, @stan] via the measr package [@thompson-joss-2023; @R-measr], and replications were conducted on AWS EC2 instances using the portableParallelSeeds package [@R-portableParallelSeeds].
-All R code for the simulation and subsequent analyses is available in a public OSF project repository.^[https://osf.io/t5v96/]
+All R code for the simulation and subsequent analyses is available in a public OSF project repository.^[<https://osf.io/t5v96/>]
 
 ## Data Generation
 
@@ -388,12 +388,18 @@ This means that using a Bayesian estimation process in order to access the LOO f
 ## Limitations and Future Directions
 
 There are some limitations to the present study.
-For example, we only investigated 
+For example, we investigated a relatively limited set of test designs.
+Future research should confirm the efficacy of the PPMC &chi;^2^ and LOO under more complex designs (e.g., more attributes, more complex item structures).
+Additionally, the present study assumed that a DCM was always desired, and therefore model comparisons focused on choosing between different DCM subtypes.
+Future research could also consider how the LOO behaves when choosing between different psychometric models.
+For example, we may compare a Bayesian DCM to an item response theory model also estimated with a Bayesian procedure.
 
 ## Conclusion
 
 Model fit is a crucial evaluation of model performance for any psychometric model, including DCMs.
-The present study demonstrates the greater utility of absolute and relative fit indices that can be used with a Bayesian estimation procedure for DCMs.
+It is important not just to evaluate model fit, but also to ensure that we are using the best methods possible for the evaluation.
+The present study offers evidence that the PPMC &chi;^2^ and LOO, which can only be utilized with a Bayesian estimation is used, offer improvements over existing maximum likelihood measures of model fit.
+By using improved methods for model evaluation, we can greater confidence that the inferences of student proficiency we draw from DCMs are valid indicates of the students' knowledge and skills.
 
 # References
 
