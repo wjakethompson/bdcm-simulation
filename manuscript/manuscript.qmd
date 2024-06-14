@@ -30,6 +30,7 @@ format:
 knitr:
   opts_chunk: 
     echo: false
+    fig-dpi: 320
 ---
 
 ```{r}
@@ -53,9 +54,83 @@ library(wjake)
 
 conflicts_prefer(dplyr::filter, .quiet = TRUE)
 conflicts_prefer(flextable::separate_header, .quiet = TRUE)
+
+ratlas::set_theme(plot_margin = margin(0, 0, 0, 0))
 ```
 
-Some background info here...
+Diagnostic classification models (DCMs; also known as cognitive diagnostic models [CDMs]) are a class of psychometric models where the latent traits are a set of fine-grained discrete variables [@bradshaw-dcm; @delatorre-dcm; @rupp-dcm].
+That is, rather than modeling a continuous scale score, DCMs estimate a respondent's proficiency or non-proficiency on a set of predefined skills.
+This results a profile of skills on which each respondent is proficient.
+These profiles offer stakeholders fine-grained results that are often more useful than an overall scale score.
+For example, in educational assessment, DCMs provide results that are more instructionally relevant [@zhang-2023; @lim-2024].
+Similarly, applying DCMs to psychological assessment allows researchers to directly model the presence or absence of a trait, rather than attempting to apply a cut point to a continuous scale [@liu-2020; @zhang-2024].
+
+As with all psychometric models, an evaluation of model fit is critical for users to have confidence in the inferences drawn from a DCM.
+Although many methods have been proposed for evaluating model fit for DCMs, most are constrained by the way DCMs are typically estimated.
+In practice, DCMs most often estimated maximum likelihood estimation [e.g., @ecpe], as this is the only process historically offered by available software [@R-GDINA; @R-CDM].
+The lack of accessible alternatives to maximum likelihood estimation has in turn limited the ways in which model fit can be evaluated.
+However, recent software advances have made Bayesian estimation of DCMs more accessible to practitioners [e.g., @R-blatent; @thompson-joss-2023], widening the scope of possible model fit evaluations.
+
+In this study, we examine the efficacy of model fit indices that are available when a Bayesian estimation process is implemented.
+We first provide a high-level overview of DCMs and existing model fit indices.
+We then conduct a simulation study to evaluate the performance of Bayesian model fit indices and discuss the implications for the practice of diagnostic modeling.
+
+## Diagnostic Classification Models
+
+DCMs are confirmatory latent class models, where each class represents a particular profile of skill proficiency.
+Although the latent skills, known as attributes, can be polytomous, they are most often binary.
+For this discussion, we limit ourselves to binary attributes modeled with dichotomous item responses.
+Using binary attributes, the number of classes is 2^*A*^, where *A* is the number of attributes measured by the assessment.
+For example, an assessment measuring three attributes would have 2^3^ = 8 classes: [0,0,0], [1,0,0], [0,1,0], [0,0,1], [1,1,0], [1,0,1], [0,1,1], and [1,1,1], where 1 indicates the presence of or proficiency on the given attribute, and 0 indicates absence or non-proficiency.
+
+In addition to the class definitions, we must also provide a Q-matrix [@tatsuoka-1983] that defines which attributes are measured by each item.
+The Q-matrix has one row per item, one column per attribute.
+Each cell of the Q-matrix is either a 0 (the item does not measure the attribute) or 1 (the item does measure the attribute).
+Given the class definitions, the probability of respondent *r* providing a correct response is defined as
+
+$$
+P(\pmb{\text{X}}_r = x_r) = \sum_{c=1}^C\nu_c\prod_{i=1}^I\pi_{ic}^{x_{ir}}(1-\pi_{ic})^{1-x_{ir}}
+$$ {#eq-dcm}
+
+where *C* is the number of classes, *I* is the number of items, and *x~ir~* is the observed item response from respondent *r* on item *i*.
+For the parameters, *&pi;~ic~* is the probability of a respondent in class *c* providing a correct response to item *i* and *&nu;~c~* is a mixing parameter that defines the base rate of membership in each class.
+
+The definition of the &pi; parameter is determined by the particular DCM subtype that is estimated.
+Each type of DCM model makes certain assumptions about how attributes interact with each other on items that measure multiple attributes.
+For example, the deterministic-input, noisy-and-gate (DINA) assumes that respondents should be proficient on all attributes measured by an item in order to provide a correct response [@dina; @junker2001].
+In contrast, the deterministic-input, noisy-or-gate (DINO) assumes that respondents should provide a correct response if they are proficient on any of the attributes measured by the item [@dino].
+
+In addition to models like the DINA and DINO that make strict assumptions about attribute interactions, there are general models that make fewer assumptions and subsume the more restrictive models.
+One popular general DCM is the loglinear cognitive diagnostic model (LCDM), which parameterizes &pi; similar to log-linear models [@lcdm; @lcdm-handbook].
+Take as an example an item measuring two attributes.
+Conditional on the attribute profile for class *c*, &alpha;~c~ = [&alpha;~1~, &alpha;~2~], the LCDM would define
+
+$$
+\text{logit}\big(P(X_{ic} = 1 | \alpha_c)\big) = \lambda_{i,0} + \lambda_{i,1,(1)}\alpha_{1} + \lambda_{i,1,(2)}\alpha_2 + \lambda_{i,2,(1,2)}\alpha_1\alpha_2
+$$ {#eq-lcdm}
+
+where &lambda;~i,0~ is an intercept and represents the log-odds of providing a correct response to item *i* when neither attribute is present.
+We then have two main effects, &lambda;~i,1,(1)~ and &lambda;~i,1,(2)~, which represent the increase in the log-odds when the first or second attribute is present, respectively.
+Finally, an interaction term, &lambda;~i,2,(1,2)~, represents the change in the log-odds when both both attributes are present.
+
+By constraining the &lambda; parameters in @eq-lcdm, we can achieve models statistically equivalent to more restrictive models such as the DINA and DINO [@rupp-dcm].
+If both main effects are constrained to 0, we have a model equivalent to the DINA model.
+That is, a respondent is proficient on either none (&lambda;~i,0~) or both (&lambda;~i,2,(1,2)~) attributes, there is no increase in probability for being proficient on a subset of the required attributes.
+The DINO model can be achieved by constraining the two main effects to be equal (i.e., &lambda;~i,1~) and constraining the interaction to be -1 &times; &lambda;~i,1~.
+With these constraints, the increase in log-odds will be equal to &lambda;~i,1~ regardless of whether one or both attributes is present (i.e., the presence of any attribute is sufficient to provide a correct response).
+
+## Model Fit for DCMs
+
+After choosing and estimating a DCM, we must evaluate the model's performance.
+
+### Absolute Fit
+
+
+### Relative Fit
+
+
+## The Current Study
+
 
 
 # Method
@@ -259,7 +334,6 @@ cond_abs_fit |>
   labs(x = "Sample size", y = "Predictive value",
        shape = "Items per attribute", linetype = "Items per attribute",
        color = "Absolute fit metric") +
-  theme_atlas() +
   theme(strip.text.y = element_markdown(),
         legend.text = element_markdown())
 ```
@@ -340,6 +414,7 @@ However, even with a slight preference for the more complex model, the LOO still
 #| label: fig-rel-cond
 #| fig-cap: Correct model selections, by test design condition
 #| out-width: "100%"
+#| fig-asp: 0.618
 
 cond_rel_fit |> 
   select(attributes:reps, pct_correct) |> 
@@ -361,7 +436,6 @@ cond_rel_fit |>
   labs(x = "Sample size", y = "Repetitions With Correct Selection",
        color = "Data generating model",
        shape = "Items per attribute", linetype = "Items per attribute") +
-  theme_atlas() +
   theme(strip.text.y = element_markdown(),
         legend.text = element_markdown())
 ```
@@ -399,7 +473,7 @@ For example, we may compare a Bayesian DCM to an item response theory model also
 Model fit is a crucial evaluation of model performance for any psychometric model, including DCMs.
 It is important not just to evaluate model fit, but also to ensure that we are using the best methods possible for the evaluation.
 The present study offers evidence that the PPMC &chi;^2^ and LOO, which can only be utilized with a Bayesian estimation is used, offer improvements over existing maximum likelihood measures of model fit.
-By using improved methods for model evaluation, we can greater confidence that the inferences of student proficiency we draw from DCMs are valid indicates of the students' knowledge and skills.
+By using improved methods for model evaluation, we can greater confidence that the inferences of respondent proficiency we draw from DCMs are valid indicates of the respondents' knowledge and skills.
 
 # References
 
@@ -407,19 +481,87 @@ By using improved methods for model evaluation, we can greater confidence that t
 #| label: write-citations
 #| include: false
 
-knitr::write_bib(unique(c(renv::dependencies()$Package,
-                          tidyverse_packages(),
-                          "base", "measr", "portableParallelSeeds",
-                          "rstan")),
-                 file = here("manuscript", "bib", "packages.bib"))
+write_package_bib <- function(x, file) {
+  if (!file_exists(file)) file_create(file)
+  
+  purrr::map(
+    x,
+    \(p) {
+      cite <- if (p == "base") {
+        year <- version$version.string |> 
+          str_replace_all(".*\\((.*)\\)", "\\1") |> 
+          ymd() |> 
+          year()
+        
+        glue::glue(
+          "@manual{{R-{p},",
+          "  author = {{{{R Core Team}}}},",
+          "  year = {{{year}}},",
+          "  title = {{{{R}}: {{A}} language and environment for statistical computing}},",
+          "  version = {{Version {getRversion()}}},",
+          "  type = {{Computer Software}},",
+          "  publisher = {{R Foundation for Statistical Computing}},",
+          "  url = {{https://www.R-project.org/}}",
+          "}}",
+          .sep = "\n"
+        )
+      } else {
+        meta <- packageDescription(p)
+        authors <- meta$Author |> 
+          str_split_1(",\\n  ") |> 
+          str_subset("\\[aut") |> 
+          str_replace_all(" \\[.*$", "") |> 
+          combine_words(sep = " and ", oxford_comma = FALSE)
+        
+        if (is_empty(authors)) {
+          authors <- meta$Author |> 
+            str_replace_all(",", " and")
+        }
+        
+        year <- meta$`Date/Publication` |> 
+          ymd_hms() |> 
+          year()
+        
+        if (is_empty(year)) {
+          year <- meta$Built |> 
+            str_split_1("; ") |> 
+            str_subset("UTC") |> 
+            ymd_hms() |> 
+            year()
+        }
+        
+        glue::glue(
+          "@manual{{R-{p},",
+          "  author = {{{authors}}},",
+          "  year = {{{year}}},",
+          "  title = {{{{{p}}}: {meta$Title}}},",
+          "  version = {{R package version {meta$Version}}},",
+          "  type = {{Computer Software}},",
+          "  publisher = {{The Comprehensive R Archive Network}},",
+          "  doi = {{10.32614/CRAN.package.{p}}}",
+          "}}",
+          .sep = "\n"
+        )
+      }
+      
+      
+      
+    }
+  ) |> 
+    unlist() |> 
+    xfun::write_utf8(con = file)
+}
+
+unique(c(renv::dependencies(quiet = TRUE)$Package,
+         tidyverse_packages(),
+         "base", "measr", "portableParallelSeeds",
+         "rstan")) |> 
+  write_package_bib(file = here("manuscript", "bib", "packages.bib"))
 
 # Correct capitalization in packages
 read_lines(here("manuscript", "bib", "packages.bib")) |>
   str_replace_all(" Stan", " {Stan}") |>
-  str_replace_all("measr:", "{measr}:") |> 
-  str_replace_all("rstan:", "{RStan}:") |>
   str_replace_all("Bayesian", "{Bayesian}") |>
-  str_replace_all("loo:", "{loo}:") |>
   str_replace_all("WAIC", "{WAIC}") |>
   write_lines(here("manuscript", "bib", "packages.bib"))
 ```
