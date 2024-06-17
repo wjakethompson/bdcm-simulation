@@ -122,20 +122,77 @@ With these constraints, the increase in log-odds will be equal to &lambda;~i,1~ 
 ## Model Fit for DCMs
 
 After choosing and estimating a DCM, we must evaluate the model's performance.
+In general, model fit can be evaluated in two ways.
+Measures of absolute fit describe how well an estimated model represents the observed data.
+Measures of relative fit directly compare two or more competing models.
+We will discuss different methods assessing absolute and relative fit for DCMs in turn.
 
 ### Absolute Fit
 
+For DCMs estimated with a maximum likelihood estimator, the most common model fit indices are so called *limited-information* indices [@m2-2005; @m2-2006].
+The most widely used of these indices is the M~2~ statistic, which was originally developed for multidimensional item response theory models [@m2-2005] and later adapted for DCMs [@hansen2016; @liu2016].
+Limited-information indices are required due to the sparse data tables created by categorical response data.
+For example, an assessment with 10 dichotomous items has 2^10^ = `r fmt_count(2^10)` possible response patterns.
+With any reasonable sample size, it is unlikely we would observe enough respondents at each response pattern to accurately and reliably compare the number of respondent the model expects at each response pattern to the observed number, and this problem become more pronounced as the number of items increases.
+We are therefore limited to lower-order summaries of the contingency tables.
+For example, the aforementioned M~2~ statistic uses the first- and second-order marginal probabilities.
+Thus, these limited-information indices cannot capture higher-order aspects of the data.
+
+When a Bayesian estimation process is used, we are not limited to the use of sparse data tables that necessitate the use of limited-information indices.
+Rather, we can utilize posterior predictive model checks (PPMCs).
+Whereas maximum likelihood methods result in a point estimate for each parameter, Bayesian method provide a posterior distribution of plausible values for each parameter.
+When using PPMCs, we simulate new data sets from the joint posterior distribution and then compare the simulated data sets to our observed data [@schad-2021].
+The key decision then is to decide which features of the data we wish to compare between the simulated and observed data sets.
+For example, @sinharay2006 and @sinharay2007 have used PPMCs to evaluate item-level fit for item response theory models and DCMs, respectively.
+
+In the present study, we are interested in overall evaluations of model fit.
+Both @park2015 and @thompson2019 describe a PPMC for the raw score distribution of an assessment.
+Using the simulated data sets, we can calculate the expected number of respondents at each raw score point.
+We then compare the counts from each individual data set to the expected count, creating a posterior distribution of a &chi;^2^-like statistic.
+Finally, we can compare the counts of respondents at each score point in our observed data, calculate the &chi;^2^-like statistic, and compare our observed value to the posterior distribution.
+The posterior distribution represents the plausible values of the statistic *if our estimated model were correct*.
+If our observed value is outside of the posterior distribution (e.g., outside the middle 95% of the distribution), this indicates model misfit.
+
+The raw score PPMC offers several theoretical advantages over limited-information methods.
+First, the raw score distribution accounts for item dependencies that are excluded when only looking at first- and second-order probabilities, as in the M~2~.
+Second, the joint posterior used to simulate the replicated data sets includes the estimated uncertainty in each of the parameters.
+Therefore, the summary statistics calculated for the PPMC reflect the plausible values given the uncertainty in the parameter estimates, rather than relying on point estimates from a maximum likelihood estimation.
+Third, because we're calculating an empirical distribution for PPMC and comparing the observed value to pre-specified quantiles of the distribution, we do not have to depend on asymptotic assumptions that may or may not be met.
+Thus, the raw score PPMC &chi;^2^ offers many potential benefits over more widely used methods.
+However, it should be noted that a Bayesian estimation does not preclude the calculation of limited-information indices.
+That is, when using a maximum likelihood estimation, we cannot calculate PPMCs, but when using a Bayesian estimation, we can calculate both PPMCs and limited-information indices.
 
 ### Relative Fit
 
+When using a maximum likelihood estimation, there are well documented methods for comparing competing models such as the Akaike Information Criterion [AIC, @aic] and the Bayesian Information Criterion [BIC, @bic].
+These indices purport to estimate the predictive accuracy of models, and can thus be used for comparing models to determine which model would offer better predictions, with some penalty for model complexity.
+Although widely used, both the AIC and BIC have significant drawbacks when using a Bayesian estimation, making their use inappropriate.
+As noted by @hollenbach-2020, the AIC assumes that we have not placed priors on the parameters, which is common practice for Bayesian models, and that the posterior is multivariate normal, which is not the case when we are dealing with categorical classes.
+Additionally, the AIC has been shown to be unreliable when the data has a nested structure, such as items within respondents [@gelman-2014].
+The BIC has similar weaknesses.
+The BIC has been shown to be inaccurate when using non-uniform prior distributions [@berger-2003].
+@hollenbach-2020 and @gelman-1995 goes so far as to recommend avoiding the BIC altogether for Bayesian models, as, despite its name, the BIC cannot actually approximate any exact Bayesian solution for predictive accuracy, and is undefined is specific prior distributions are not selected.
+
+Therefore, when using Bayesian estimation, we must turn to other information criteria for comparing models.
+Namely, leave-one-out cross validation (LOO), as described by @loo-waic.
+A complete description of the LOO is beyond the scope of this paper, and we direct readers to @loo-waic for details.
+In short, the LOO uses the posterior density to estimate out-of-sample predictive fit for a model, known as the expected log predictive density (ELPD).
+Then just as with other information criteria such as the AIC and BIC, we can compare the ELPD for competing models.
+The model with the largest value is the preferred model (i.e., expected to have the highest predictive accuracy).
+As implemented in the loo package [@R-loo], we can also estimated the standard error of the difference.
+If the difference between two models is much larger than the standard error of the difference [e.g., 2.5, @bengio2004], that indicates a meaningful difference in the LOO estimates between the models.
 
 ## The Current Study
 
-
+Previous worked has compared the efficacy of absolute [@hu-2016] and relative [@lei-2016; @sen2017] fit measures for DCMS.
+However, these studies were limited to model fit indices that are possible when using maximum likelihood estimation.
+No research to date has yet compared Bayesian measures of model fit to the maximum likelihood-based methods to evaluate whether a Bayesian estimation should be preferred in order to access more efficacious methods.
+Further, no study has yet examined the use of the LOO for DCMs, as all studies have on relative fit have focused on the AIC, BIC, and other similar metrics.
+In this study, we conduct a simulation to evaluate how well Bayesian methods of model fit performance compared to their maximum likelihood-based counterparts.
 
 # Method
 
-To evaluate the performance of absolute and relative fit indices for DCMs, we conducted a simulation study.
+To evaluate the performance of Bayesian absolute and relative fit indices for DCMs, we conducted a simulation study.
 In this study, we manipulated the number of assessed attributes (2 or 3), the minimum number of items measuring each attribute (5 or 7), the sample size (500 or 1,000).
 These factors were chosen to represent test designs that are commonly seen in applied research [e.g., @ecpe; @dtmr].
 Using a full factorial design, these factors resulted in a total of 8 test design conditions.
@@ -555,7 +612,7 @@ write_package_bib <- function(x, file) {
 unique(c(renv::dependencies(quiet = TRUE)$Package,
          tidyverse_packages(),
          "base", "measr", "portableParallelSeeds",
-         "rstan")) |> 
+         "rstan", "loo")) |> 
   write_package_bib(file = here("manuscript", "bib", "packages.bib"))
 
 # Correct capitalization in packages
