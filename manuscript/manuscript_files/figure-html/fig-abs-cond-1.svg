@@ -156,7 +156,8 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpMzMuNzN8MjI2LjMzfDAuMDB8MjAuMjg=)'>
-<text x='38.31' y='14.43' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='61.27px' lengthAdjust='spacingAndGlyphs'>Two attributes</text>
+<text x='99.39' y='13.17' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='18.05px' lengthAdjust='spacingAndGlyphs'>Two</text>
+<text x='120.18' y='13.17' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='40.49px' lengthAdjust='spacingAndGlyphs'>attributes</text>
 </g>
 <g clip-path='url(#cpMC4wMHw0NjguMDB8MC4wMHw0NjguMDA=)'>
 </g>
@@ -166,7 +167,8 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpMjU1LjEzfDQ0Ny43MnwwLjAwfDIwLjI4)'>
-<text x='259.71' y='14.43' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='68.93px' lengthAdjust='spacingAndGlyphs'>Three attributes</text>
+<text x='316.96' y='13.17' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='25.70px' lengthAdjust='spacingAndGlyphs'>Three</text>
+<text x='345.40' y='13.17' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='40.49px' lengthAdjust='spacingAndGlyphs'>attributes</text>
 </g>
 <g clip-path='url(#cpMC4wMHw0NjguMDB8MC4wMHw0NjguMDA=)'>
 </g>
@@ -176,9 +178,7 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpNDQ3LjcyfDQ2OC4wMHwyMC4yOHwxOTMuNzQ=)'>
-<text transform='translate(454.83,24.86) rotate(90)' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='34.47px' lengthAdjust='spacingAndGlyphs'>Positive</text>
-<text transform='translate(454.83,62.07) rotate(90)' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='42.13px' lengthAdjust='spacingAndGlyphs'>predictive</text>
-<text transform='translate(454.83,106.93) rotate(90)' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='23.53px' lengthAdjust='spacingAndGlyphs'>value</text>
+<text transform='translate(453.57,107.01) rotate(90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='105.60px' lengthAdjust='spacingAndGlyphs'>Positive predictive value</text>
 </g>
 <g clip-path='url(#cpMC4wMHw0NjguMDB8MC4wMHw0NjguMDA=)'>
 </g>
@@ -188,9 +188,7 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpNDQ3LjcyfDQ2OC4wMHwyMjIuNTR8Mzk2LjAx)'>
-<text transform='translate(454.83,227.12) rotate(90)' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='38.84px' lengthAdjust='spacingAndGlyphs'>Negative</text>
-<text transform='translate(454.83,268.70) rotate(90)' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='42.13px' lengthAdjust='spacingAndGlyphs'>predictive</text>
-<text transform='translate(454.83,313.57) rotate(90)' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='23.53px' lengthAdjust='spacingAndGlyphs'>value</text>
+<text transform='translate(453.57,309.27) rotate(90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='109.97px' lengthAdjust='spacingAndGlyphs'>Negative predictive value</text>
 </g>
 <g clip-path='url(#cpMC4wMHw0NjguMDB8MC4wMHw0NjguMDA=)'>
 <text x='80.10' y='405.32' style='font-size: 9.00px; font-family: "Arial Narrow";' textLength='12.31px' lengthAdjust='spacingAndGlyphs'>500</text>
@@ -211,22 +209,22 @@
 <text x='249.63' y='425.39' style='font-size: 11.50px; font-family: "Arial Narrow";' textLength='16.77px' lengthAdjust='spacingAndGlyphs'>size</text>
 <text transform='translate(8.23,241.42) rotate(-90)' style='font-size: 11.50px; font-family: "Arial Narrow";' textLength='41.39px' lengthAdjust='spacingAndGlyphs'>Predictive</text>
 <text transform='translate(8.23,197.40) rotate(-90)' style='font-size: 11.50px; font-family: "Arial Narrow";' textLength='22.54px' lengthAdjust='spacingAndGlyphs'>value</text>
-<text x='71.76' y='457.75' style='font-size: 11.50px; font-family: "Arial Narrow";' textLength='74.93px' lengthAdjust='spacingAndGlyphs'>Absolute fit metric</text>
-<circle cx='161.06' cy='453.63' r='1.95' style='stroke-width: 0.71; stroke: #E69F00; fill: #E69F00;' />
-<line x1='154.15' y1='453.63' x2='167.97' y2='453.63' style='stroke-width: 1.07; stroke: #E69F00; stroke-linecap: butt;' />
-<circle cx='199.43' cy='453.63' r='1.95' style='stroke-width: 0.71; stroke: #56B4E9; fill: #56B4E9;' />
-<line x1='192.52' y1='453.63' x2='206.34' y2='453.63' style='stroke-width: 1.07; stroke: #56B4E9; stroke-linecap: butt;' />
-<text x='175.43' y='454.83' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='6.28px' lengthAdjust='spacingAndGlyphs'>M</text>
-<text x='181.70' y='457.46' style='font-size: 7.36px; font-family: "Arial Narrow";' textLength='3.36px' lengthAdjust='spacingAndGlyphs'>2</text>
-<text x='213.80' y='456.62' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='21.77px' lengthAdjust='spacingAndGlyphs'>PPMC</text>
-<text x='237.66' y='456.62' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='3.93px' lengthAdjust='spacingAndGlyphs'>χ</text>
-<text x='241.59' y='453.98' style='font-size: 7.36px; font-family: "Arial Narrow";' textLength='3.36px' lengthAdjust='spacingAndGlyphs'>2</text>
-<text x='267.86' y='457.75' style='font-size: 11.50px; font-family: "Arial Narrow";' textLength='75.98px' lengthAdjust='spacingAndGlyphs'>Items per attribute</text>
-<circle cx='358.21' cy='453.63' r='1.95' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<line x1='351.30' y1='453.63' x2='365.12' y2='453.63' style='stroke-width: 1.07; stroke-linecap: butt;' />
-<polygon points='391.14,450.59 393.77,455.15 388.50,455.15 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<line x1='384.22' y1='453.63' x2='398.05' y2='453.63' style='stroke-width: 1.07; stroke-dasharray: 2.85,2.85; stroke-linecap: butt;' />
-<text x='372.58' y='455.95' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='4.19px' lengthAdjust='spacingAndGlyphs'>5</text>
-<text x='405.50' y='455.95' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='4.19px' lengthAdjust='spacingAndGlyphs'>7</text>
+<text x='71.50' y='457.75' style='font-size: 11.50px; font-family: "Arial Narrow";' textLength='75.45px' lengthAdjust='spacingAndGlyphs'>Absolute-fit metric</text>
+<circle cx='161.32' cy='453.63' r='1.95' style='stroke-width: 0.71; stroke: #E69F00; fill: #E69F00;' />
+<line x1='154.40' y1='453.63' x2='168.23' y2='453.63' style='stroke-width: 1.07; stroke: #E69F00; stroke-linecap: butt;' />
+<circle cx='199.69' cy='453.63' r='1.95' style='stroke-width: 0.71; stroke: #56B4E9; fill: #56B4E9;' />
+<line x1='192.78' y1='453.63' x2='206.60' y2='453.63' style='stroke-width: 1.07; stroke: #56B4E9; stroke-linecap: butt;' />
+<text x='175.69' y='454.83' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='6.28px' lengthAdjust='spacingAndGlyphs'>M</text>
+<text x='181.96' y='457.46' style='font-size: 7.36px; font-family: "Arial Narrow";' textLength='3.36px' lengthAdjust='spacingAndGlyphs'>2</text>
+<text x='214.06' y='456.62' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='21.77px' lengthAdjust='spacingAndGlyphs'>PPMC</text>
+<text x='237.92' y='456.62' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='3.93px' lengthAdjust='spacingAndGlyphs'>χ</text>
+<text x='241.85' y='453.98' style='font-size: 7.36px; font-family: "Arial Narrow";' textLength='3.36px' lengthAdjust='spacingAndGlyphs'>2</text>
+<text x='268.12' y='457.75' style='font-size: 11.50px; font-family: "Arial Narrow";' textLength='75.98px' lengthAdjust='spacingAndGlyphs'>Items per attribute</text>
+<circle cx='358.47' cy='453.63' r='1.95' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
+<line x1='351.56' y1='453.63' x2='365.38' y2='453.63' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polygon points='391.39,450.59 394.03,455.15 388.76,455.15 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
+<line x1='384.48' y1='453.63' x2='398.31' y2='453.63' style='stroke-width: 1.07; stroke-dasharray: 2.85,2.85; stroke-linecap: butt;' />
+<text x='372.84' y='455.95' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='4.19px' lengthAdjust='spacingAndGlyphs'>5</text>
+<text x='405.76' y='455.95' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='4.19px' lengthAdjust='spacingAndGlyphs'>7</text>
 </g>
 </svg>

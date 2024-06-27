@@ -89,7 +89,8 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpNDIuMzR8MjQwLjc3fDAuMDB8MjAuMjg=)'>
-<text x='46.92' y='14.43' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='61.27px' lengthAdjust='spacingAndGlyphs'>Two attributes</text>
+<text x='110.92' y='13.17' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='18.05px' lengthAdjust='spacingAndGlyphs'>Two</text>
+<text x='131.71' y='13.17' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='40.49px' lengthAdjust='spacingAndGlyphs'>attributes</text>
 </g>
 <g clip-path='url(#cpMC4wMHw0NjguMDB8MC4wMHwyODkuMjI=)'>
 </g>
@@ -99,7 +100,8 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpMjY5LjU3fDQ2OC4wMHwwLjAwfDIwLjI4)'>
-<text x='274.15' y='14.43' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='68.93px' lengthAdjust='spacingAndGlyphs'>Three attributes</text>
+<text x='334.32' y='13.17' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='25.70px' lengthAdjust='spacingAndGlyphs'>Three</text>
+<text x='362.76' y='13.17' style='font-size: 12.00px; font-family: "Arial Narrow";' textLength='40.49px' lengthAdjust='spacingAndGlyphs'>attributes</text>
 </g>
 <g clip-path='url(#cpMC4wMHw0NjguMDB8MC4wMHwyODkuMjI=)'>
 <text x='90.30' y='226.54' style='font-size: 9.00px; font-family: "Arial Narrow";' textLength='12.31px' lengthAdjust='spacingAndGlyphs'>500</text>
@@ -117,19 +119,19 @@
 <text transform='translate(8.23,140.75) rotate(-90)' style='font-size: 11.50px; font-family: "Arial Narrow";' textLength='18.86px' lengthAdjust='spacingAndGlyphs'>With</text>
 <text transform='translate(8.23,119.28) rotate(-90)' style='font-size: 11.50px; font-family: "Arial Narrow";' textLength='30.90px' lengthAdjust='spacingAndGlyphs'>Correct</text>
 <text transform='translate(8.23,85.75) rotate(-90)' style='font-size: 11.50px; font-family: "Arial Narrow";' textLength='38.78px' lengthAdjust='spacingAndGlyphs'>Selection</text>
-<text x='76.71' y='278.97' style='font-size: 11.50px; font-family: "Arial Narrow";' textLength='95.37px' lengthAdjust='spacingAndGlyphs'>Data generating model</text>
-<circle cx='186.44' cy='274.86' r='1.95' style='stroke-width: 0.71; stroke: #E69F00; fill: #E69F00;' />
-<line x1='179.53' y1='274.86' x2='193.36' y2='274.86' style='stroke-width: 1.07; stroke: #E69F00; stroke-linecap: butt;' />
-<circle cx='233.17' cy='274.86' r='1.95' style='stroke-width: 0.71; stroke: #56B4E9; fill: #56B4E9;' />
-<line x1='226.26' y1='274.86' x2='240.09' y2='274.86' style='stroke-width: 1.07; stroke: #56B4E9; stroke-linecap: butt;' />
-<text x='200.81' y='277.17' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='17.99px' lengthAdjust='spacingAndGlyphs'>DINA</text>
-<text x='247.54' y='277.17' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='21.34px' lengthAdjust='spacingAndGlyphs'>LCDM</text>
-<text x='291.80' y='278.97' style='font-size: 11.50px; font-family: "Arial Narrow";' textLength='75.98px' lengthAdjust='spacingAndGlyphs'>Items per attribute</text>
-<circle cx='382.15' cy='274.86' r='1.95' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<line x1='375.24' y1='274.86' x2='389.06' y2='274.86' style='stroke-width: 1.07; stroke-linecap: butt;' />
-<polygon points='415.08,271.82 417.71,276.38 412.44,276.38 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<line x1='408.16' y1='274.86' x2='421.99' y2='274.86' style='stroke-width: 1.07; stroke-dasharray: 2.85,2.85; stroke-linecap: butt;' />
-<text x='396.52' y='277.17' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='4.19px' lengthAdjust='spacingAndGlyphs'>5</text>
-<text x='429.44' y='277.17' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='4.19px' lengthAdjust='spacingAndGlyphs'>7</text>
+<text x='76.45' y='278.97' style='font-size: 11.50px; font-family: "Arial Narrow";' textLength='95.89px' lengthAdjust='spacingAndGlyphs'>Data-generating model</text>
+<circle cx='186.70' cy='274.86' r='1.95' style='stroke-width: 0.71; stroke: #E69F00; fill: #E69F00;' />
+<line x1='179.79' y1='274.86' x2='193.62' y2='274.86' style='stroke-width: 1.07; stroke: #E69F00; stroke-linecap: butt;' />
+<circle cx='233.43' cy='274.86' r='1.95' style='stroke-width: 0.71; stroke: #56B4E9; fill: #56B4E9;' />
+<line x1='226.52' y1='274.86' x2='240.35' y2='274.86' style='stroke-width: 1.07; stroke: #56B4E9; stroke-linecap: butt;' />
+<text x='201.07' y='277.17' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='17.99px' lengthAdjust='spacingAndGlyphs'>DINA</text>
+<text x='247.80' y='277.17' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='21.34px' lengthAdjust='spacingAndGlyphs'>LCDM</text>
+<text x='292.06' y='278.97' style='font-size: 11.50px; font-family: "Arial Narrow";' textLength='75.98px' lengthAdjust='spacingAndGlyphs'>Items per attribute</text>
+<circle cx='382.41' cy='274.86' r='1.95' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
+<line x1='375.50' y1='274.86' x2='389.32' y2='274.86' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polygon points='415.33,271.82 417.97,276.38 412.70,276.38 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
+<line x1='408.42' y1='274.86' x2='422.25' y2='274.86' style='stroke-width: 1.07; stroke-dasharray: 2.85,2.85; stroke-linecap: butt;' />
+<text x='396.78' y='277.17' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='4.19px' lengthAdjust='spacingAndGlyphs'>5</text>
+<text x='429.70' y='277.17' style='font-size: 9.20px; font-family: "Arial Narrow";' textLength='4.19px' lengthAdjust='spacingAndGlyphs'>7</text>
 </g>
 </svg>

@@ -1,7 +1,7 @@
 ---
 title: "An Evaluation of Methods for Assessing Model Fit for Bayesian Diagnostic Classification Models"
 blank-lines-above-title: 2
-shorttitle: "Model Fit for BDCMs"
+shorttitle: "MODEL FIT FOR BAYESIAN DCMs"
 author:
   - name: W. Jake Thompson
     corresponding: true
@@ -18,8 +18,8 @@ author-note:
   blank-lines-above-author-note: 1
   disclosures:
     conflict-of-interest: The author has no conflict of interest to declare.
-    financial-support: This work was supported by the Institute for Education Sciences [grant number R305D210045].
-abstract: "This document is a template demonstrating the apaquarto format."
+    financial-support: "The research reported here was supported by the Institute of Education Sciences, U.S. Department of Education, through Grant [R305D210045](https://ies.ed.gov/funding/grantsearch/details.asp?ID=4546) to the University of Kansas. The opinions expressed are those of the authors and do not represent the views of the Institute or the U.S. Department of Education."
+abstract: "Diagnostic classification models (DCMs) are psychometric models that can be used to estimate the presence or absence of psychological traits, or proficiency on fine-grained skills. Critical the use of any psychometric model in practice, including DCMs, is an evaluation of model fit. Traditionally, DCMs have been estimated with maximum likelihood methods and then evaluated with limited-information fit indices. However, recently, methodological and technological advancements have made Bayesian methods for estimating DCMs more accessible. When using a Bayesian estimation process, new methods for model evaluation are available to assess model fit. In the current study, we conduct a simulation study to compare the performance of the traditional measures of model fit to Bayesian methods. The results indicate that Bayesian measures of model fit generally outperform the more traditional limited-information indices. Notably, flags for model misfit were more likely to be true positives when using Bayesian methods. Additionally, Bayesian methods for model comparisons also showed better performance than has been reported for methods traditionally in conjunction with a maximum likelihood estimation. In summary, the findings suggest that Bayesian methods offer a better evaluation of model fit than more commonly used metrics."
 keywords: [diagnostic assessment, model fit, classification]
 bibliography: ["bib/bibliography.bib", "bib/packages.bib"]
 format:
@@ -58,33 +58,33 @@ conflicts_prefer(flextable::separate_header, .quiet = TRUE)
 ratlas::set_theme(plot_margin = margin(0, 0, 0, 0))
 ```
 
-Diagnostic classification models (DCMs; also known as cognitive diagnostic models [CDMs]) are a class of psychometric models where the latent traits are a set of fine-grained discrete variables [@bradshaw-dcm; @delatorre-dcm; @rupp-dcm].
-That is, rather than modeling a continuous scale score, DCMs estimate a respondent's proficiency or non-proficiency on a set of predefined skills.
-This results a profile of skills on which each respondent is proficient.
+Diagnostic classification models (DCMs; also known as cognitive diagnostic models [CDMs]) are a class of psychometric models where the latent traits are a set of fine-grained, discrete variables [@bradshaw-dcm; @delatorre-dcm; @rupp-dcm].
+That is, rather than modeling a continuous scale score, DCMs estimate a respondent's proficiency or nonproficiency on a set of predefined skills.
+These estimates result in a profile of skills on which each respondent is proficient.
 These profiles offer stakeholders fine-grained results that are often more useful than an overall scale score.
 For example, in educational assessment, DCMs provide results that are more instructionally relevant [@zhang-2023; @lim-2024].
 Similarly, applying DCMs to psychological assessment allows researchers to directly model the presence or absence of a trait, rather than attempting to apply a cut point to a continuous scale [@liu-2020; @zhang-2024].
 
 As with all psychometric models, an evaluation of model fit is critical for users to have confidence in the inferences drawn from a DCM.
 Although many methods have been proposed for evaluating model fit for DCMs, most are constrained by the way DCMs are typically estimated.
-In practice, DCMs most often estimated maximum likelihood estimation [e.g., @ecpe], as this is the only process historically offered by available software [@R-GDINA; @R-CDM].
+In practice, DCMs are most often estimated using a maximum likelihood procedure [e.g., @ecpe], as this is the only process historically offered by available software [@R-GDINA; @R-CDM].
 The lack of accessible alternatives to maximum likelihood estimation has in turn limited the ways in which model fit can be evaluated.
-However, recent software advances have made Bayesian estimation of DCMs more accessible to practitioners [e.g., @R-blatent; @thompson-joss-2023], widening the scope of possible model fit evaluations.
+However, recent software advances have made Bayesian estimation of DCMs more accessible to practitioners [e.g., @R-blatent; @thompson-joss-2023], widening the scope of possible model-fit evaluations.
 
-In this study, we examine the efficacy of model fit indices that are available when a Bayesian estimation process is implemented.
-We first provide a high-level overview of DCMs and existing model fit indices.
-We then conduct a simulation study to evaluate the performance of Bayesian model fit indices and discuss the implications for the practice of diagnostic modeling.
+In this study, we examine the efficacy of model-fit indices that are available when a Bayesian estimation process is implemented.
+We first provide a high-level overview of DCMs and existing model-fit indices.
+We then conduct a simulation study to evaluate the performance of Bayesian model-fit indices and discuss the implications for the practice of diagnostic modeling.
 
 ## Diagnostic Classification Models
 
-DCMs are confirmatory latent class models, where each class represents a particular profile of skill proficiency.
+DCMs are confirmatory latent class models, in which each class represents a particular profile of skill proficiency.
 Although the latent skills, known as attributes, can be polytomous, they are most often binary.
 For this discussion, we limit ourselves to binary attributes modeled with dichotomous item responses.
 Using binary attributes, the number of classes is 2^*A*^, where *A* is the number of attributes measured by the assessment.
-For example, an assessment measuring three attributes would have 2^3^ = 8 classes: [0,0,0], [1,0,0], [0,1,0], [0,0,1], [1,1,0], [1,0,1], [0,1,1], and [1,1,1], where 1 indicates the presence of or proficiency on the given attribute, and 0 indicates absence or non-proficiency.
+For example, an assessment measuring three attributes would have 2^3^ = 8 classes: [0,0,0], [1,0,0], [0,1,0], [0,0,1], [1,1,0], [1,0,1], [0,1,1], and [1,1,1], where 1 indicates the presence of or proficiency on the given attribute and 0 indicates absence or nonproficiency.
 
 In addition to the class definitions, we must also provide a Q-matrix [@tatsuoka-1983] that defines which attributes are measured by each item.
-The Q-matrix has one row per item, one column per attribute.
+The Q-matrix has one row per item and one column per attribute.
 Each cell of the Q-matrix is either a 0 (the item does not measure the attribute) or 1 (the item does measure the attribute).
 Given the class definitions, the probability of respondent *r* providing a correct response is defined as
 
@@ -96,164 +96,171 @@ where *C* is the number of classes, *I* is the number of items, and *x~ir~* is t
 For the parameters, *&pi;~ic~* is the probability of a respondent in class *c* providing a correct response to item *i* and *&nu;~c~* is a mixing parameter that defines the base rate of membership in each class.
 
 The definition of the &pi; parameter is determined by the particular DCM subtype that is estimated.
-Each type of DCM model makes certain assumptions about how attributes interact with each other on items that measure multiple attributes.
-For example, the deterministic-input, noisy-and-gate (DINA) assumes that respondents should be proficient on all attributes measured by an item in order to provide a correct response [@dina; @junker2001].
-In contrast, the deterministic-input, noisy-or-gate (DINO) assumes that respondents should provide a correct response if they are proficient on any of the attributes measured by the item [@dino].
+The choice of a DCM model defines certain assumptions about how attributes interact with each other on items that measure multiple attributes.
+For example, the deterministic-input, noisy "and" gate (DINA) model assumes that respondents should be proficient on all attributes measured by an item in order to provide a correct response [@dina; @junker2001].
+In contrast, the deterministic-input, noisy "or" gate (DINO) model assumes that respondents should provide a correct response if they are proficient on any of the attributes measured by the item [@dino].
 
-In addition to models like the DINA and DINO that make strict assumptions about attribute interactions, there are general models that make fewer assumptions and subsume the more restrictive models.
-One popular general DCM is the loglinear cognitive diagnostic model (LCDM), which parameterizes &pi; similar to log-linear models [@lcdm; @lcdm-handbook].
-Take as an example an item measuring two attributes.
+In addition to models like the DINA and DINO that make strict assumptions about attribute interactions, there are general models that make fewer assumptions and subsume the more-restrictive models.
+One popular general DCM is the log-linear cognitive diagnostic model (LCDM), which parameterizes &pi; similar to log-linear models [@lcdm-handbook; @lcdm].
+Consider an item measuring two attributes.
 Conditional on the attribute profile for class *c*, &alpha;~c~ = [&alpha;~1~, &alpha;~2~], the LCDM would define
 
 $$
 \text{logit}\big(P(X_{ic} = 1 | \alpha_c)\big) = \lambda_{i,0} + \lambda_{i,1,(1)}\alpha_{1} + \lambda_{i,1,(2)}\alpha_2 + \lambda_{i,2,(1,2)}\alpha_1\alpha_2
 $$ {#eq-lcdm}
 
-where &lambda;~i,0~ is an intercept and represents the log-odds of providing a correct response to item *i* when neither attribute is present.
-We then have two main effects, &lambda;~i,1,(1)~ and &lambda;~i,1,(2)~, which represent the increase in the log-odds when the first or second attribute is present, respectively.
-Finally, an interaction term, &lambda;~i,2,(1,2)~, represents the change in the log-odds when both both attributes are present.
+where &lambda;~i,0~ is an intercept and represents the log odds of providing a correct response to item *i* when neither attribute is present.
+We then have two main effects, &lambda;~i,1,(1)~ and &lambda;~i,1,(2)~, which represent the increase in the log odds when the first or second attribute is present, respectively.
+Finally, an interaction term, &lambda;~i,2,(1,2)~, represents the change in the log odds when both attributes are present.
 
-By constraining the &lambda; parameters in @eq-lcdm, we can achieve models statistically equivalent to more restrictive models such as the DINA and DINO [@rupp-dcm].
-If both main effects are constrained to 0, we have a model equivalent to the DINA model.
-That is, a respondent is proficient on either none (&lambda;~i,0~) or both (&lambda;~i,2,(1,2)~) attributes, there is no increase in probability for being proficient on a subset of the required attributes.
+By constraining the &lambda; parameters in @eq-lcdm, we can achieve models statistically equivalent to more-restrictive models such as the DINA and DINO models [@rupp-dcm].
+If both main effects are constrained to 0, the model is equivalent to the DINA model.
+That is, a respondent is proficient on either none (&lambda;~i,0~) or both (&lambda;~i,2,(1,2)~) attributes, and there is no increase in probability for being proficient on a subset of the required attributes.
 The DINO model can be achieved by constraining the two main effects to be equal (i.e., &lambda;~i,1~) and constraining the interaction to be -1 &times; &lambda;~i,1~.
-With these constraints, the increase in log-odds will be equal to &lambda;~i,1~ regardless of whether one or both attributes is present (i.e., the presence of any attribute is sufficient to provide a correct response).
+With these constraints, the increase in log odds will be equal to &lambda;~i,1~ regardless of whether one or both attributes is present (i.e., the presence of any attribute is sufficient to provide a correct response).
 
 ## Model Fit for DCMs
 
-After choosing and estimating a DCM, we must evaluate the model's performance.
+After choosing and estimating a DCM, one must evaluate the model's performance.
 In general, model fit can be evaluated in two ways.
 Measures of absolute fit describe how well an estimated model represents the observed data.
-Measures of relative fit directly compare two or more competing models.
-We will discuss different methods assessing absolute and relative fit for DCMs in turn.
+Measures of relative fit directly compare the fit of two or more competing models.
+We will discuss different methods assessing absolute and relative fit for DCMs in the following sections.
 
 ### Absolute Fit
 
-For DCMs estimated with a maximum likelihood estimator, the most common model fit indices are so called *limited-information* indices [@m2-2005; @m2-2006].
+For DCMs estimated with a maximum likelihood process, the most common model-fit indices are so called *limited-information indices* [@m2-2005; @m2-2006].
 The most widely used of these indices is the M~2~ statistic, which was originally developed for multidimensional item response theory models [@m2-2005] and later adapted for DCMs [@hansen2016; @liu2016].
-Limited-information indices are required due to the sparse data tables created by categorical response data.
+Limited-information indices are required because of the sparse data tables created by categorical response data.
 For example, an assessment with 10 dichotomous items has 2^10^ = `r fmt_count(2^10)` possible response patterns.
-With any reasonable sample size, it is unlikely we would observe enough respondents at each response pattern to accurately and reliably compare the number of respondent the model expects at each response pattern to the observed number, and this problem become more pronounced as the number of items increases.
+With any reasonable sample size, it is unlikely we would observe enough respondents at each response pattern to accurately and reliably compare the number of respondents the model expects at each response pattern to the observed number, and this problem become more pronounced as the number of items increases.
 We are therefore limited to lower-order summaries of the contingency tables.
 For example, the aforementioned M~2~ statistic uses the first- and second-order marginal probabilities.
 Thus, these limited-information indices cannot capture higher-order aspects of the data.
 
-When a Bayesian estimation process is used, we are not limited to the use of sparse data tables that necessitate the use of limited-information indices.
+When a Bayesian estimation process is used, we have options beyond sparse tables that necessitate
+the use limited-information indices.
 Rather, we can utilize posterior predictive model checks (PPMCs).
-Whereas maximum likelihood methods result in a point estimate for each parameter, Bayesian method provide a posterior distribution of plausible values for each parameter.
+Whereas maximum likelihood methods result in a point estimate for each parameter, Bayesian methods provide a posterior distribution of plausible values for each parameter.
 When using PPMCs, we simulate new data sets from the joint posterior distribution and then compare the simulated data sets to our observed data [@schad-2021].
-The key decision then is to decide which features of the data we wish to compare between the simulated and observed data sets.
+The key decision, then, is to choose the features of the data in the simulated and observed data sets that we want to compare.
 For example, @sinharay2006 and @sinharay2007 have used PPMCs to evaluate item-level fit for item response theory models and DCMs, respectively.
 
 In the present study, we are interested in overall evaluations of model fit.
-Both @park2015 and @thompson2019 describe a PPMC for the raw score distribution of an assessment.
+Both @park2015 and @thompson2019 describe a PPMC for the raw-score distribution of an assessment.
 Using the simulated data sets, we can calculate the expected number of respondents at each raw score point.
-We then compare the counts from each individual data set to the expected count, creating a posterior distribution of a &chi;^2^-like statistic.
+We then can compare the counts from each individual data set to the expected count, creating a posterior distribution of a &chi;^2^-like statistic.
 Finally, we can compare the counts of respondents at each score point in our observed data, calculate the &chi;^2^-like statistic, and compare our observed value to the posterior distribution.
-The posterior distribution represents the plausible values of the statistic *if our estimated model were correct*.
+The posterior distribution represents the plausible values of the statistic if our estimated model were correct.
 If our observed value is outside of the posterior distribution (e.g., outside the middle 95% of the distribution), this indicates model misfit.
+This comparison is often summarized as the posterior predictive *p*-value (*ppp*), which is the proportion of the posterior distribution that is more extreme than our observed value.
 
-The raw score PPMC offers several theoretical advantages over limited-information methods.
-First, the raw score distribution accounts for item dependencies that are excluded when only looking at first- and second-order probabilities, as in the M~2~.
+The raw-score PPMC offers several theoretical advantages over limited-information methods.
+First, the raw-score distribution accounts for item dependencies that are excluded when looking only at first- and second-order probabilities, as in the M~2~.
 Second, the joint posterior used to simulate the replicated data sets includes the estimated uncertainty in each of the parameters.
 Therefore, the summary statistics calculated for the PPMC reflect the plausible values given the uncertainty in the parameter estimates, rather than relying on point estimates from a maximum likelihood estimation.
-Third, because we're calculating an empirical distribution for PPMC and comparing the observed value to pre-specified quantiles of the distribution, we do not have to depend on asymptotic assumptions that may or may not be met.
-Thus, the raw score PPMC &chi;^2^ offers many potential benefits over more widely used methods.
+Third, because we are calculating an empirical distribution for the PPMC and comparing the observed value to prespecified quantiles of the distribution, we do not have to depend on asymptotic assumptions that may or may not be met.
+Thus, the raw-score PPMC &chi;^2^ offers many potential benefits over methods that are more widely used.
 However, it should be noted that a Bayesian estimation does not preclude the calculation of limited-information indices.
 That is, when using a maximum likelihood estimation, we cannot calculate PPMCs, but when using a Bayesian estimation, we can calculate both PPMCs and limited-information indices.
 
 ### Relative Fit
 
-When using a maximum likelihood estimation, there are well documented methods for comparing competing models such as the Akaike Information Criterion [AIC, @aic] and the Bayesian Information Criterion [BIC, @bic].
-These indices purport to estimate the predictive accuracy of models, and can thus be used for comparing models to determine which model would offer better predictions, with some penalty for model complexity.
-Although widely used, both the AIC and BIC have significant drawbacks when using a Bayesian estimation, making their use inappropriate.
-As noted by @hollenbach-2020, the AIC assumes that we have not placed priors on the parameters, which is common practice for Bayesian models, and that the posterior is multivariate normal, which is not the case when we are dealing with categorical classes.
-Additionally, the AIC has been shown to be unreliable when the data has a nested structure, such as items within respondents [@gelman-2014].
-The BIC has similar weaknesses.
-The BIC has been shown to be inaccurate when using non-uniform prior distributions [@berger-2003].
-@hollenbach-2020 and @gelman-1995 goes so far as to recommend avoiding the BIC altogether for Bayesian models, as, despite its name, the BIC cannot actually approximate any exact Bayesian solution for predictive accuracy, and is undefined is specific prior distributions are not selected.
+Relative-fit indices are used to compare competing models.
+These indices do not provide information on whether or not a model adequately fits the observed data.
+Rather, they compare how well one model fits relative to another model.
+Therefore, relative-fit indices primarily useful after evaluating absolute fit [@sen2017].
 
-Therefore, when using Bayesian estimation, we must turn to other information criteria for comparing models.
-Namely, leave-one-out cross validation (LOO), as described by @loo-waic.
+When using a maximum likelihood estimation, there are well documented methods for comparing competing models, such as the Akaike Information Criterion [AIC, @aic] and the Bayesian Information Criterion [BIC, @bic].
+These indices purport to estimate the predictive accuracy of models and can thus be used for comparing models to determine which model would offer better predictions, with some penalty for model complexity.
+Although commonly used, both the AIC and BIC have significant drawbacks when using a Bayesian estimation, making their use inappropriate.
+As noted by @hollenbach-2020, the AIC assumes that we have not placed priors on the parameters, which is common practice for Bayesian models.
+The AIC also assumes that the posterior is multivariate normal, which is not the case when using categorical classes.
+Additionally, the AIC has been shown to be unreliable when the data have a nested structure, such as items within respondents [@gelman-2014].
+The BIC has similar weaknesses.
+The BIC has been shown to be inaccurate when using nonuniform prior distributions [@berger-2003].
+@hollenbach-2020 and @gelman-1995 went so far as to recommend avoiding the BIC altogether for Bayesian models, as, despite its name, the BIC cannot actually approximate any exact Bayesian solution for predictive accuracy and is undefined if specific prior distributions are not selected.
+
+Therefore, when using Bayesian estimation, we must turn to other information criteria for comparing models, namely, leave-one-out cross validation (LOO), as described by @loo-waic.
 A complete description of the LOO is beyond the scope of this paper, and we direct readers to @loo-waic for details.
 In short, the LOO uses the posterior density to estimate out-of-sample predictive fit for a model, known as the expected log predictive density (ELPD).
-Then just as with other information criteria such as the AIC and BIC, we can compare the ELPD for competing models.
+Then, just as with other information criteria such as the AIC and BIC, we can compare the ELPD for competing models.
 The model with the largest value is the preferred model (i.e., expected to have the highest predictive accuracy).
-As implemented in the loo package [@R-loo], we can also estimated the standard error of the difference.
-If the difference between two models is much larger than the standard error of the difference [e.g., 2.5, @bengio2004], that indicates a meaningful difference in the LOO estimates between the models.
+As implemented in the loo package [@R-loo], we can also estimate the standard error of the difference.
+A difference between two models that is much larger than the standard error of the difference [e.g., 2.5, @bengio2004] indicates a meaningful difference in the LOO estimates between the models.
 
 ## The Current Study
 
-Previous worked has compared the efficacy of absolute [@hu-2016] and relative [@lei-2016; @sen2017] fit measures for DCMS.
-However, these studies were limited to model fit indices that are possible when using maximum likelihood estimation.
-No research to date has yet compared Bayesian measures of model fit to the maximum likelihood-based methods to evaluate whether a Bayesian estimation should be preferred in order to access more efficacious methods.
-Further, no study has yet examined the use of the LOO for DCMs, as all studies have on relative fit have focused on the AIC, BIC, and other similar metrics.
-In this study, we conduct a simulation to evaluate how well Bayesian methods of model fit performance compared to their maximum likelihood-based counterparts.
+Previous work has compared the efficacy of absolute [@hu-2016] and relative [@lei-2016; @sen2017] fit measures for DCMs.
+However, these studies were limited to model-fit indices that are possible when using maximum likelihood estimation.
+No research to date has compared the performance of Bayesian measures of absolute model fit to the maximum likelihood-based methods.
+Further, no study has yet examined the use of the LOO for DCMs, as all studies on relative fit have focused on the AIC, BIC, and other similar metrics.
+In this study, we conducted a simulation to evaluate how well Bayesian methods of model-fit performance compared to their maximum likelihood-based counterparts.
 
 # Method
 
-To evaluate the performance of Bayesian absolute and relative fit indices for DCMs, we conducted a simulation study.
-In this study, we manipulated the number of assessed attributes (2 or 3), the minimum number of items measuring each attribute (5 or 7), the sample size (500 or 1,000).
-These factors were chosen to represent test designs that are commonly seen in applied research [e.g., @ecpe; @dtmr].
-Using a full factorial design, these factors resulted in a total of 8 test design conditions.
-Within each test design condition, we also manipulated the data generating model (LCDM or DINA) and the estimated model (LCDM or DINA) in order to evaluate the performance of model fit metrics when the estimated model should and should not fit the data.
-With fully crossed data generating and estimating models, there are 4 modeling conditions within each condition, resulting in a total of 32 conditions across all test designs.
+To evaluate the performance of Bayesian absolute- and relative-fit indices for DCMs, we conducted a simulation study.
+In this study, we manipulated the number of assessed attributes (two or three), the minimum number of items measuring each attribute (five or seven), the sample size (500 or 1,000).
+These factors were chosen to represent test designs that are commonly seen in applied research [e.g., @dtmr; @ecpe].
+Using a full factorial design, these factors resulted in a total of eight test-design conditions.
+Within each test-design condition, we also manipulated the data-generating model (LCDM or DINA) and the estimated model (LCDM or DINA) to evaluate the performance of model-fit metrics when the estimated model should and should not fit the data.
+With fully crossed data-generating and estimating models, there are four modeling conditions within each condition, resulting in 32 total conditions across all test designs.
 We conducted 50 replications per condition.
 
 The simulation and subsequent analyses were conducted in R version `r getRversion()` [@R-base].
 All DCMs were estimated using *Stan* [version `r rstan::stan_version()`, @stan] via the measr package [@thompson-joss-2023; @R-measr], and replications were conducted on AWS EC2 instances using the portableParallelSeeds package [@R-portableParallelSeeds].
-All R code for the simulation and subsequent analyses is available in a public OSF project repository.^[<https://osf.io/t5v96/>]
+All R code for the simulation and subsequent analyses is available in a public OSF project repository.^[The project repository can be found at <https://osf.io/t5v96/>.]
 
 ## Data Generation
 
-The data generation followed the design of the data simulations used by @johnson2018 and @thompson2023 in their evaluation of reliability indices for DCMs.
+The data generation followed the design of the data simulations used by @johnson2018 and @thompson2023 in their evaluations of reliability indices for DCMs.
 In this study, the number of respondents was determined by the simulation condition.
 The true attribute profile for each respondent was determined by a random draw from all possible profiles.
-Additionally, each simulated assessment measured 2 or 3 attributes, which each attribute measured by at least 5 or 7 items.
+Additionally, each simulated assessment measured two or three attributes, with each attribute measured by at least five or seven items.
 The total number of items for each simulated assessment is therefore the product of the number of attributes and the minimum number of items for each attribute.
-In the simulation, the Q-matrix for each simulated assessment was specified such that the first 3 items measuring each attribute are single-attribute items.
-The remaining 2 or 4 items for each attribute (for the 5 and 7 item conditions, respectively) had a 50% chance of also measuring a second attribute.
+In the simulation, the Q-matrix for each simulated assessment was specified so that the first three items measuring each attribute were single-attribute items.
+The remaining two or four items for each attribute (for the five-item and seven-item conditions, respectively) had a 50% chance of also measuring a second attribute.
 
-Item parameter generation was dependent on the data generating model.
-In conditions where data was generated from the LCDM, item parameters included item intercepts, main effects, and interactions, all of which are on the log-odds scale.
-Item intercepts were drawn from a uniform distribution ranging from -3.0 to 0.6, main effects were drawn from a uniform distribution ranging from 1.0 to 5.0.
-In the LCDM interaction terms are constrained to be greater than -1 times the smallest main effect.
+Item-parameter generation depended on the data-generating model.
+In conditions where data were generated from the LCDM, item parameters included item intercepts, main effects, and interactions, all of which are on the log-odds scale.
+Item intercepts were drawn from a uniform distribution ranging from -3.0 to 0.6, and main effects were drawn from a uniform distribution ranging from 1.0 to 5.0.
+In the LCDM, interaction terms are constrained to be greater than -1 times the smallest main effect to ensure monotonicity of the model.
 Thus, the interaction parameters were drawn from a uniform distribution ranging from the calculated lower bound to 2.0.
-In conditions where data was generated from the DINA model, item parameters include the slipping and guessing parameters, which are both on the probability scale.
+In conditions where data were generated from the DINA model, item parameters include the slipping and guessing parameters, which are both on the probability scale.
 For consistency with the simulation of LCDM data, parameters were generated on the log-odds scale and converted to probability values.
 Guessing parameters were drawn from a uniform distribution ranging from -3.0 to 0.6, consistent with the LCDM intercepts.
 The final guessing parameters were then calculated as the inverse logit of the generated parameter.
 Slipping parameters were generated from a uniform distribution ranging from 1.0 to 5.0, consistent with the main effects in the LCDM.
-Because the slipping parameter represents the probability of *not* providing a correct response when a respondent is proficient on the measured attributes, the final slipping parameter was calculated as 1 minus the inverse logit of the generated parameter value.
+Because the slipping parameter represents the probability of not providing a correct response when a respondent is proficient on the measured attributes, the final slipping parameter was calculated as 1 minus the inverse logit of the generated parameter value.
 
-The generated attribute profiles, Q-matrix, and item parameters were then used to simulate an data set for each replication.
+The generated attribute profiles, Q-matrix, and item parameters were then used to simulate a data set for each replication.
 
 ## Simulation Process and Analysis
 
-After generating the data, both an LCDM and DINA model were estimated on the simulated data set.
-We then calculated both absolute fit (i.e., M~2~ and raw score PPMC &chi;^2^) and relative fit (i.e., WAIC, LOO) indices for each model.
-All of these indices were calculated for both estimated models in order to evaluate their performance under different conditions of known model specifications.
-When data was generated from the LCDM, we expect the LCDM to show adequate model fit and be the preferred model, as the DINA model is under-specified.
-On the other hand, when data was generated from the DINA model, we expect both models to show adequate absolute fit, as the LCDM subsumes the DINA model.
-However, because the LCDM is over-specified in this condition, we expect the DINA model to be preferred by the relative fit indices.
+After the data were generated, both an LCDM and a DINA model were estimated on the simulated data set.
+We then calculated indices of absolute fit (i.e., M~2~ and raw-score PPMC &chi;^2^) and relative fit (i.e., LOO) for each model.
+All of these indices were calculated for both estimated models to evaluate how they performed under different conditions of known model specifications.
+When data were generated from the LCDM, we expected the LCDM to show adequate model fit and be the preferred model, as the DINA model was underspecified.
+On the other hand, when data were generated from the DINA model, we expected both models to show adequate absolute fit, as the LCDM subsumes the DINA model.
+However, because the LCDM was overspecified in this condition, we expected the DINA model to be preferred by the relative-fit indices.
 
-For each absolute fit index, an estimated model was flagged for misfit if the *p*-value or *ppp* was less than .05 for the M~2~ and PPMC &chi;^2^, respectively.
+For each absolute-fit index, an estimated model was flagged for misfit if the *p*-value or the *ppp* was less than .05 for the M~2~ and PPMC &chi;^2^, respectively.
 We then used the flags to calculate the positive and negative predictive values [@altman1994; @smith2012].
-The positive predictive value (PPV) is the proportion of positive results that are true positives. That is, the proportion of models where the fit index indicated poor model fit, where we expect poor model fit.
-Similarly the negative predictive value (NPV) is the proportion of models where the where fit index indicated adequate model fit, and we expect adequate fit.
+The positive predictive value (PPV) is the proportion of positive results that are true positives, that is, the proportion of models where the fit index indicated poor model fit where we expected it.
+Similarly, the negative predictive value (NPV) is the proportion of models in which the fit index indicated adequate model fit where we expected it.
 
-Finally, for relative fit, we determined the preferred model by calculating the difference between the LOO for each of the estimated models, as well as the standard error of the difference.
-Using the criteria suggested by @bengio2004, if the difference between the criterion for the LCDM and DINA was greater than 2.5 times the standard error of the difference, we determined the preferred model to be the model with the lowest index value.
-If the difference was less than 2.5 times the standard error, we determined the models to be equally fitting and therefore selected the more parsimonious model (i.e., the DINA model) as the preferred model.
-We then calculated the proportion of replications within each condition where the LOO selected the correct model (i.e., the model that was used to generate the data).
+Finally, for relative fit, we determined the preferred model by calculating the difference between the LOOs for each of the estimated models, as well as the standard error of the difference.
+Using the criteria suggested by @bengio2004, when the difference between the criterion for the LCDM and the DINA model was greater than 2.5 times the standard error of the difference, we determined the preferred model to be the model with the lowest index value.
+When the difference was less than 2.5 times the standard error, we determined the models to be equally fitting and therefore selected the more parsimonious model (i.e., the DINA model) as the preferred model.
+We then calculated the proportion of replications within each condition in which the LOO selected the correct model (i.e., the model that was used to generate the data).
 
-The expected results for each combination of generating and estimating model are shown in @tbl-exp-results summarizes the expected model fit results for each of the modeling conditions.
+The expected model-fit results for each combination of generating and estimating models are shown in @tbl-exp-results.
 
 ```{r}
 #| label: tbl-exp-results
-#| tbl-cap: Expected model fit results
+#| tbl-cap: Expected Model-Fit Results
 #| apa-note: |
-#|   LCDM = loglinear cognitive diagnostic model;
+#|   LCDM = log-linear cognitive diagnostic model;
 #|   DINA = diagnostic input, noisy "and" gate.
 #| ft.align: left
 
@@ -263,8 +270,8 @@ crossing(generate = c("LCDM", "DINA"), estimate = c("LCDM", "DINA")) |>
          rel = generate) |> 
   rename(`Generating model` = generate,
          `Estimated model` = estimate,
-         `Absolute fit flag` = abs,
-         `Relative fit preference` = rel) |> 
+         `Absolute-fit flag` = abs,
+         `Relative-fit preference` = rel) |> 
   flextable() |>
   merge_v(j = c("Generating model", "Relative fit preference")) |> 
   hline(i = 2) |> 
@@ -350,20 +357,22 @@ overall_abs_fit <- abs_fit |>
 ```
 
 Across all conditions, the M~2~ statistic had a PPV of `r fmt_leading_zero(fmt_digits(overall_abs_fit["m2_ppv"], digits = 3))` and an NPV of `r fmt_leading_zero(fmt_digits(overall_abs_fit["m2_npv"], digits = 3))`.
-In contrast the PPMC &chi;^2^ had a PPV of `r fmt_leading_zero(fmt_digits(overall_abs_fit["ppmc_ppv"], digits = 3))` and an NPV of `r fmt_leading_zero(fmt_digits(overall_abs_fit["ppmc_npv"], digits = 3))`.
-This indicates that a negative test value for both metrics (i.e., a non-significant result) are usually true negatives.
-On the other hand, a positive test result (i.e., a significant result that indicates model misfit) was a true positive only `r fmt_prop_pct(overall_abs_fit["m2_ppv"])`% of the time for the M~2~ statistic, compared to `r fmt_prop_pct(overall_abs_fit["ppmc_ppv"])`% of the time for the PPMC &chi;^2^ statistic.
+In contrast, the PPMC &chi;^2^ had a PPV of `r fmt_leading_zero(fmt_digits(overall_abs_fit["ppmc_ppv"], digits = 3))` and an NPV of `r fmt_leading_zero(fmt_digits(overall_abs_fit["ppmc_npv"], digits = 3))`.
+The NPVs indicate that negative test values for both metrics (i.e., a nonsignificant result) were usually true negatives.
+On the other hand, the PPVs indicate that positive test results (i.e., a significant result that indicates model misfit) were a true positive only `r fmt_prop_pct(overall_abs_fit["m2_ppv"])`% of the time for the M~2~ statistic, compared to `r fmt_prop_pct(overall_abs_fit["ppmc_ppv"])`% of the time for the PPMC &chi;^2^ statistic.
 
-When looking at the PPV and NPV values by test design condition, as show in @fig-abs-cond, we see that the NPV values for each metric are similar for all test designs.
-This is consistent with the overall results, which showed similar NPVs for the M~2~ and PPMC &chi;^2^.
-However, the PPV for the M~2~ is consistently lower than the PPV for the PPMC &chi;^2^.
+When looking at the PPVs and NPVs by test-design condition, as shown in @fig-abs-cond, we see that the NPVs for each metric are similar for all test designs.
+The condition-specific results are consistent with the overall results, which showed similar NPVs for the M~2~ and the PPMC &chi;^2^.
+However, the PPVs for the M~2~ are consistently lower than the PPVs for the PPMC &chi;^2^.
 This difference becomes more pronounced as the data set becomes larger (i.e., larger samples, more attributes).
-Thus, as the sample gets larger and the test design gets more complex, the M~2~ becomes more likely to result in a false positive, indicating model misfit when there is none.
-On the other hand, the PPMC &chi;^2^ demonstrated consistently high PPV values across all simulation conditions.
+Thus, as the sample gets larger and the test design gets more complex, the M~2~ becomes more likely to result in a false positive, indicating model misfit when there is in fact none.
+On the other hand, the PPMC &chi;^2^ demonstrated consistently high PPVs across all simulation conditions.
 
 ```{r}
 #| label: fig-abs-cond
-#| fig-cap: Positive and negative predictive values, by test design condition
+#| fig-cap: Positive and Negative Predictive Values, by Test-Design Condition
+#| apa-note: |
+#|   PPMC = Posterior predictive model check.
 #| out-width: "100%"
 
 cond_abs_fit |> 
@@ -390,8 +399,8 @@ cond_abs_fit |>
   expand_limits(y = c(0.6, 1)) +
   labs(x = "Sample size", y = "Predictive value",
        shape = "Items per attribute", linetype = "Items per attribute",
-       color = "Absolute fit metric") +
-  theme(strip.text.y = element_markdown(),
+       color = "Absolute-fit metric") +
+  theme(strip.text = element_markdown(hjust = 0.5),
         legend.text = element_markdown())
 ```
 
@@ -429,18 +438,18 @@ overall_rel_fit <- rel_fit |>
   deframe()
 ```
 
-As previously discussed, evaluations of relative fit are only meaningful when the competing models have been found to have adequate absolute model fit.
-Accordingly, for the relative fit results, we filtered the simulation output to only include replications where both the LCDM and DINA model showed adequate absolute model fit.
-Based on the absolute fit findings in the previous section, we used the PPMC &chi;^2^ statistic to determine absolute fit.
-@tbl-both-abs-fit shows the number of replications by test design condition and data generating model where both estimated model demonstrated adequate absolute fit.
-As expected, both the estimated DINA and LCDM models often had adequate absolute fit when data was generated from the DINA model, as the LCDM subsumes the DINA model.
-In contrast, it was much less likely that both models would show adequate absolute fit when data was generated from the LCDM model.
+As previously discussed, evaluations of relative fit are only meaningful only when the competing models have been found to have adequate absolute model fit.
+Accordingly, for the relative-fit results, we filtered the simulation output to include only include replications in which both the LCDM and the DINA model showed adequate absolute model fit.
+Using the absolute-fit findings in the previous section, we used the PPMC &chi;^2^ statistic to determine absolute fit.
+@tbl-both-abs-fit shows the number of replications by test-design condition and data-generating model in which both estimated models demonstrated adequate absolute fit.
+As expected, both the estimated DINA model and the LCDM often had adequate absolute fit when data were generated from the DINA model, as the LCDM subsumes the DINA model.
+In contrast, it was much less likely that both models would show adequate absolute fit when data were generated from the LCDM.
 
 ```{r}
 #| label: tbl-both-abs-fit
-#| tbl-cap: Number of replications where both models demonstrated absolute fit
+#| tbl-cap: Number of Replications in Which Both Models Demonstrated Absolute Fit
 #| apa-note: |
-#|   LCDM = loglinear cognitive diagnostic model;
+#|   LCDM = log-linear cognitive diagnostic model;
 #|   DINA = diagnostic input, noisy "and" gate.
 #| ft.align: left
 
@@ -452,24 +461,27 @@ both_fit |>
   rename(Attributes = attributes, Items = items, `Sample size` = sample_size,
          DINA = dina, LCDM = lcdm) |> 
   flextable() |>
-  add_header_row(values = c("Test designs", "Data generating model"),
-                 colwidths = c(3, 2)) |> 
   width(width = 1.2) |> 
+  add_header_row(values = c("Test designs", "Data-generating model"),
+                 colwidths = c(3, 2)) |> 
   theme_apa() |>
   line_spacing(part = "all") |>
   padding(padding.top = 5, padding.bottom = 5)
 ```
 
-Overall, across all conditions, the LOO determined the correct model in `r fmt_prop_pct(overall_rel_fit["loo_correct"] / (nrow(both_fit)))`% of replications.
-@fig-rel-cond shows the percentage of replications where the LOO selected the correct model by test design condition and data generating model.
-Across all test design conditions, when the LCDM was used to generate the data and both the LCDM and DINA model showed adequate absolute fit, the LOO always selected correct model (i.e., the LCDM).
-On the other hand, when the DINA model was used to generate the data, the LOO selected the LCDM as the preferred model in up to `r fmt_prop_pct(1 - min(cond_rel_fit$pct_correct))`% of replications (the three attribute, 7 item, and 1,000 sample size condition).
-Thus, even when the DINA model was used to generate the data and the estimated DINA model showed adequate model fit, the LOO still preferred the more complex model in some situations.
-However, even with a slight preference for the more complex model, the LOO still identified the correct model in greater than `r fmt_prop_pct(round_to(min(cond_rel_fit$pct_correct), .05, direction = "down"))`% of replications in all conditions.
+Across all conditions, the LOO determined the correct model in `r fmt_prop_pct(overall_rel_fit["loo_correct"] / (nrow(both_fit)))`% of replications.
+@fig-rel-cond shows the percentage of replications in which the LOO selected the correct model by test-design condition and data-generating model.
+Across all test-design conditions, when the LCDM was used to generate the data and both the LCDM and the DINA model showed adequate absolute fit, the LOO always selected the correct model (i.e., the LCDM).
+On the other hand, when the DINA model was used to generate the data, the LOO selected the LCDM as the preferred model in up to `r fmt_prop_pct(1 - min(cond_rel_fit$pct_correct))`% of replications (the three-attribute, seven-item, 1,000-sample-size condition).
+Thus, even when the DINA model was used to generate the data and the estimated DINA model showed adequate model fit, the LOO still preferred the more-complex model in some situations.
+However, even with a slight preference for the more-complex model, the LOO still identified the correct model in more than `r fmt_prop_pct(round_to(min(cond_rel_fit$pct_correct), .05, direction = "down"))`% of replications in all conditions.
 
 ```{r}
 #| label: fig-rel-cond
-#| fig-cap: Correct model selections, by test design condition
+#| fig-cap: Correct Model Selections, by Test-Design Condition
+#| apa-note: |
+#|   LCDM = log-linear cognitive diagnostic model;
+#|   DINA = diagnostic input, noisy "and" gate.
 #| out-width: "100%"
 #| fig-asp: 0.618
 
@@ -491,46 +503,46 @@ cond_rel_fit |>
   scale_color_okabeito() +
   expand_limits(y = c(0.6, 1)) +
   labs(x = "Sample size", y = "Repetitions With Correct Selection",
-       color = "Data generating model",
+       color = "Data-generating model",
        shape = "Items per attribute", linetype = "Items per attribute") +
-  theme(strip.text.y = element_markdown(),
+  theme(strip.text = element_markdown(hjust = 0.5),
         legend.text = element_markdown())
 ```
 
 
 # Discussion
 
-In this study, we examined the performance absolute and relative model fit indices for Bayesian DCMs.
-Overall, the findings indicate support for the use of Bayesian estimation for DCMs in order to facilitate the use of Bayesian methods for model evaluation.
+In this study, we examined the performance absolute and relative model-fit indices for Bayesian DCMs.
+Overall, the findings support the use of Bayesian estimation for DCMs to facilitate the use of Bayesian methods for model evaluation.
 
 For evaluating absolute model fit, we examined the M~2~ and PPMC &chi;^2^ statistics.
 Across all conditions, the M~2~ statistic performed well, with results consistent with previous research evaluating the efficacy of the method [e.g., @liu2016].
 However, the PPMC &chi;^2^ statistic showed comparable or improved performance in all conditions.
-This was particularly true when examining the positive predictive value for each statistic (i.e., the probability that a flag is actually indicative of model misfit).
+This improvement was particularly true when examining the PPVs for each statistic (i.e., the probability that a flag actually indicates model misfit).
 Although both the M~2~ and PPMC &chi;^2^ had similar negative predictive values, the PPMC &chi;^2^ had consistently higher positive predictive values.
-Thus, when using the PPMC &chi;^2^, practitioners can have more confidence that a positive test result truly indicates model misfit.
+Thus, when using the PPMC &chi;^2^, practitioners can be more confident that a positive test result truly indicates model misfit.
 
 Bayesian methods offer different methods for evaluating relative model fit than are appropriate when using a maximum likelihood estimation.
 Whereas indices such as the AIC and BIC can be used when models are estimated using maximum likelihood estimation, the LOO is used for Bayesian models.
 In this study, the LOO showed good performance, selecting the correct model in `r fmt_prop_pct(overall_rel_fit["loo_correct"] / (nrow(both_fit)))`% of replications.
 In contrast, the AIC and BIC have been found to identify the correct model in as few as 30% of replications [@sen2017].
-This means that using a Bayesian estimation process in order to access the LOO for model comparison offers a marked improvement over methods that are used with a maximum likelihood estimation.
+The performance of the LOO in this study compared to reported performance of the AIC and BIC means that using a Bayesian estimation process to access the LOO for model comparisons offers a marked improvement over methods that are used with a maximum likelihood estimation.
 
 ## Limitations and Future Directions
 
 There are some limitations to the present study.
 For example, we investigated a relatively limited set of test designs.
-Future research should confirm the efficacy of the PPMC &chi;^2^ and LOO under more complex designs (e.g., more attributes, more complex item structures).
+Future research should confirm the efficacy of the PPMC &chi;^2^ and LOO under more-complex designs (e.g., more attributes, more-complex item structures).
 Additionally, the present study assumed that a DCM was always desired, and therefore model comparisons focused on choosing between different DCM subtypes.
-Future research could also consider how the LOO behaves when choosing between different psychometric models.
-For example, we may compare a Bayesian DCM to an item response theory model also estimated with a Bayesian procedure.
+Future research could also consider how the LOO behaves when practitioners are comparing different psychometric models.
+For example, we may compare a Bayesian DCM to an item response theory model that was also estimated with a Bayesian procedure.
 
 ## Conclusion
 
 Model fit is a crucial evaluation of model performance for any psychometric model, including DCMs.
-It is important not just to evaluate model fit, but also to ensure that we are using the best methods possible for the evaluation.
-The present study offers evidence that the PPMC &chi;^2^ and LOO, which can only be utilized with a Bayesian estimation is used, offer improvements over existing maximum likelihood measures of model fit.
-By using improved methods for model evaluation, we can greater confidence that the inferences of respondent proficiency we draw from DCMs are valid indicates of the respondents' knowledge and skills.
+It is important not only to evaluate model fit, but also to ensure that we are using the best methods possible for the evaluation.
+The present study offers evidence that the PPMC &chi;^2^ and LOO, which can only be utilized when a Bayesian estimation is used, offer improvements over existing maximum likelihood measures of model fit.
+By using improved methods for model evaluation, we can have greater confidence that the inferences of respondent proficiency we draw from DCMs are valid indications of the respondents' knowledge and skills.
 
 # References
 
@@ -556,7 +568,7 @@ write_package_bib <- function(x, file) {
           "  year = {{{year}}},",
           "  title = {{{{R}}: {{A}} language and environment for statistical computing}},",
           "  version = {{Version {getRversion()}}},",
-          "  type = {{Computer Software}},",
+          "  type = {{Computer software}},",
           "  publisher = {{R Foundation for Statistical Computing}},",
           "  url = {{https://www.R-project.org/}}",
           "}}",
@@ -593,7 +605,7 @@ write_package_bib <- function(x, file) {
           "  year = {{{year}}},",
           "  title = {{{{{p}}}: {meta$Title}}},",
           "  version = {{R package version {meta$Version}}},",
-          "  type = {{Computer Software}},",
+          "  type = {{Computer software}},",
           "  publisher = {{The Comprehensive R Archive Network}},",
           "  doi = {{10.32614/CRAN.package.{p}}}",
           "}}",
