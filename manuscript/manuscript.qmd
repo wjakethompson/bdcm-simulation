@@ -62,7 +62,7 @@ Diagnostic classification models (DCMs; also known as cognitive diagnostic model
 That is, rather than modeling a continuous scale score, DCMs estimate a respondent's proficiency or nonproficiency on a set of predefined skills.
 These estimates result in a profile of skills on which each respondent is proficient.
 These profiles offer stakeholders fine-grained results that are often more useful than an overall scale score.
-For example, in educational assessment, DCMs provide results that are more instructionally relevant [@zhang-2023; @lim-2024].
+For example, in educational assessment, DCMs provide results that are more instructionally relevant [@lim-2024; @thompson-2024; @zhang-2023].
 Similarly, applying DCMs to psychological assessment allows researchers to directly model the presence or absence of a trait, rather than attempting to apply a cut point to a continuous scale [@liu-2020; @zhang-2024].
 
 As with all psychometric models, an evaluation of model fit is critical for users to have confidence in the inferences drawn from a DCM.
@@ -273,7 +273,7 @@ crossing(generate = c("LCDM", "DINA"), estimate = c("LCDM", "DINA")) |>
          `Absolute-fit flag` = abs,
          `Relative-fit preference` = rel) |> 
   flextable() |>
-  merge_v(j = c("Generating model", "Relative fit preference")) |> 
+  merge_v(j = c("Generating model", "Relative-fit preference")) |> 
   hline(i = 2) |> 
   width(width = 1.2) |> 
   theme_apa() |>
